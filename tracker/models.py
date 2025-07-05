@@ -4,7 +4,7 @@ class Goal(models.Model):
     name = models.CharField(max_length=200, blank=False, null=False)
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
-    is_realized = models.BooleanField(default=False)
+    is_concluded = models.BooleanField(default=False)
 
 class Piece(models.Model):
     goal = models.ManyToManyField("Goal", blank=True, null=True)
