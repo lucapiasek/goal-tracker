@@ -18,7 +18,7 @@ class Piece(models.Model):
     period = models.CharField(max_length=100, blank=True, null=True)
     pitch = models.CharField(max_length=30, blank=True, null=True)
     type = models.CharField(max_length=70, blank=True, null=True)
-    time_to_master = models.DurationField(blank=True, null=True, help="Sugerowany czas opanowania utworu")
+    time_to_master = models.DurationField(blank=True, null=True, help_text="Sugerowany czas opanowania utworu")
     is_mastered = models.BooleanField(default=False)
     is_archived = models.BooleanField(default=False)
     is_cleared = models.BooleanField(default=False)
