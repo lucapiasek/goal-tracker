@@ -1,0 +1,18 @@
+{% extends 'base.html '%}
+{% if goal_list %}
+    <table>
+        <caption>Cele</caption>
+        {% for goal in goal_list %}
+            <td>{{ goal.name }}</td>
+            {% if goal.date %}
+            <td>{{ goal.date }}</td>
+            {% endif %}
+            {% if goal.time %}
+            <td>{{ goal.time }}</td>
+            {% endif %}
+            <input type="checkbox" {% if goal.is_concluded %}checked="checked" {% endif %}/>
+        {% endfor %}
+    </table>
+{% else %}
+Tu pojawią się dodane przez Ciebie cele.
+{% endif %}
