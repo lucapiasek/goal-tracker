@@ -2,6 +2,7 @@ from django.urls import reverse
 import pytest
 from pytest_django.asserts import assertTemplateUsed
 
+@pytest.mark.django_db
 def test_goals_view_with_no_goals(client):
     """
     Goals view exists and provides correct template.
