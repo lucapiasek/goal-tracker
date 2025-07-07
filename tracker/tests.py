@@ -1,4 +1,4 @@
-from django.shortcuts import reverse
+from django.urls import reverse
 import pytest
 from pytest_django.asserts import assertTemplateUsed
 
