@@ -7,7 +7,7 @@ class Goal(models.Model):
     is_concluded = models.BooleanField(default=False)
 
 class Piece(models.Model):
-    goal = models.ManyToManyField("Goal", blank=True, null=True)
+    goal = models.ManyToManyField("Goal", blank=True)
     name = models.CharField(max_length=200, blank=True, null=True)
     name_to_display = models.CharField(max_length=200, blank=True, null=True)
     composer = models.CharField(max_length=200, blank=True, null=True)
