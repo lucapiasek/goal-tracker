@@ -1,2 +1,13 @@
-from django.test import TestCase, Client
+from django.shortcuts import reverse
 import pytest
+from pytest_django.asserts import assertTemplateUsed
+
+def test_goals_view_with_no_goals(client):
+    """
+    Goals view exists and provides correct template.
+    """
+    url = reverse('goals')
+    response = client.get(url)
+    assert response.status_code == 200
+    assertTemplateUsed(response, 'tracker/goals.html')
+
