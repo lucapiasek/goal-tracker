@@ -5,6 +5,7 @@ class Goal(models.Model):
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
     is_concluded = models.BooleanField(default=False)
+    additional_info = models.TextField(blank=True, null=True)
 
 class Piece(models.Model):
     goal = models.ManyToManyField("Goal", blank=True)
