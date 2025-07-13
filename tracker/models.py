@@ -15,6 +15,7 @@ class Piece(models.Model):
     opus = models.CharField(max_length=30, blank=True, null=True)
     number = models.CharField(max_length=30, blank=True, null=True)
     genre = models.CharField(max_length=60, blank=True, null=True)
+    collection_set = models.CharField(max_length=120, blank=True, null=True) # todo: model set - one to many
     period = models.CharField(max_length=100, blank=True, null=True)
     pitch = models.CharField(max_length=30, blank=True, null=True)
     type = models.CharField(max_length=70, blank=True, null=True)
