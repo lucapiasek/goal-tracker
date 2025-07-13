@@ -10,15 +10,15 @@ class Piece(models.Model):
     goal = models.ManyToManyField("Goal", blank=True)
     name = models.CharField(max_length=200, blank=True, null=True)
     name_to_display = models.CharField(max_length=200, blank=True, null=True)
-    composer = models.CharField(max_length=200, blank=True, null=True)
-    color = models.CharField(max_length=60, blank=True, null=True)
+    composer = models.CharField(max_length=200, blank=True, null=True) # todo: model Composer M2M relation
+    color = models.CharField(max_length=60, blank=True, null=True) # todo: model Color - choices
     opus = models.CharField(max_length=30, blank=True, null=True)
     number = models.CharField(max_length=30, blank=True, null=True)
     genre = models.CharField(max_length=60, blank=True, null=True)
     collection_set = models.CharField(max_length=120, blank=True, null=True) # todo: model set - one to many
     period = models.CharField(max_length=100, blank=True, null=True)
     pitch = models.CharField(max_length=30, blank=True, null=True)
-    type = models.CharField(max_length=70, blank=True, null=True)
+    type = models.CharField(max_length=70, blank=True, null=True) # todo?: model Type // M2M choices
     time_to_master = models.DurationField(blank=True, null=True, help_text="Sugerowany czas opanowania utworu")
     is_mastered = models.BooleanField(default=False)
     is_archived = models.BooleanField(default=False)
