@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 class Goal(models.Model):
     name = models.CharField(max_length=200, blank=True, null=True)
@@ -6,6 +7,11 @@ class Goal(models.Model):
     time = models.TimeField(blank=True, null=True)
     is_concluded = models.BooleanField(default=False)
     additional_info = models.TextField(blank=True, null=True)
+
+    def clean(self):
+        super().clean()
+        if not (self.name or self.additional_info):
+            raise ValidationError("At least one of the fields must be filled.")
 
 class Piece(models.Model):
     goal = models.ManyToManyField("Goal", blank=True)
