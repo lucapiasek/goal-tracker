@@ -1,6 +1,8 @@
 from django.urls import reverse
 import pytest
 from pytest_django.asserts import assertTemplateUsed
+from tracker.models import Goal
+from django.core.exceptions import ValidationError
 
 @pytest.mark.django_db
 def test_goals_view_with_no_goals(client):
@@ -12,3 +14,10 @@ def test_goals_view_with_no_goals(client):
     assert response.status_code == 200
     assertTemplateUsed(response, 'tracker/goals.html')
 
+def test_goal_model_with_all_fields_empty_raises_validation_error():
+    goal = Goal()
+
+    with pytest.raises(ValidationError) as exception:
+        goal.full_clean()
+
+    assert "At least one of the fields must be filled." in str(exception.value)
