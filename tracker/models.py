@@ -31,4 +31,8 @@ class Piece(models.Model):
     is_archived = models.BooleanField(default=False)
     is_cleared = models.BooleanField(default=False)
 
+    def clean(self):
+        super().clean()
+        if not (self.name or self.goal or (self.collection_set and self.number)):
+            raise ValidationError("At least one of the fields must be filled")
 
