@@ -35,3 +35,12 @@ def test_goals_view_with_one_full_goal(client, goal):
     assert response.status_code == 200
     assert "Dec. 31, 2025" in response.content.decode('utf-8')
     assert response.context['goal_list'].count() == 1
+
+@pytest.mark.django_db
+def test_goals_view_with_multiple_goals(client):
+    goal1 = GoalFactory()
+    goal2 = GoalFactory()
+    url = reverse('tracker:goals')
+    response = client.get(url)
+    assert response.status_code == 200
+    assert response.context['goal_list'].count() == 2
