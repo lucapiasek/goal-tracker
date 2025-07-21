@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<table>
+    <caption>Utwory</caption>
+    {% for piece in piece_list %}
+        {% if piece.composer %}
+        <td>{{ piece.composer }}</td>
+        {% endif %}
+        {% if piece.name %}
+        <td> - {{ piece.name }}</td>
+        {% endif %}
+        {% if piece.opus %}
+        <td> op. {{ piece.opus }} </td>
+        {% endif %}
+        {% if piece.number %}
+        <td>nr {{ piece.number }}</td>
+        {% endif %}
+        <input type="checkbox" {% if piece.is_cleared %}checked="checked" {% endif %}/>
+        {% if piece.is_mastered %}
+        <td>Utwór opanowany</td>
+        {% endif %}
+    {% empty %}
+        <td>Tu pojawią się dodane przez Ciebie utwory.</td>
+    {% endfor %}
+</table>
+{% endblock %}
