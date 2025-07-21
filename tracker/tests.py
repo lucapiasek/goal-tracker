@@ -3,6 +3,7 @@ import pytest
 from pytest_django.asserts import assertTemplateUsed
 from tracker.models import Goal
 from django.core.exceptions import ValidationError
+import datetime
 
 
 def test_goal_model_with_all_fields_empty_raises_validation_error():
@@ -22,3 +23,15 @@ def test_goals_view_with_no_goals(client):
     response = client.get(url)
     assert response.status_code == 200
     assertTemplateUsed(response, 'tracker/goals.html')
+
+@pytest.mark.django_db
+def test_goals_view_with_one_full_goal(client, goal):
+    goal.date = datetime.date(year=2025, month=12, day=31)
+    goal.time = datetime.time(hour=23, minute=59, second=59)
+    goal.additional_info = 'Additional information'
+    goal.save()
+    url = reverse('tracker:goals')
+    response = client.get(url)
+    assert response.status_code == 200
+    assert "Dec. 31, 2025" in response.content.decode('utf-8')
+    assert response.context['goal_list'].count() == 1
