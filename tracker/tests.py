@@ -2,6 +2,7 @@ from django.urls import reverse
 import pytest
 from pytest_django.asserts import assertTemplateUsed
 from tracker.models import Goal
+from tracker.factories import GoalFactory
 from django.core.exceptions import ValidationError
 import datetime
 
