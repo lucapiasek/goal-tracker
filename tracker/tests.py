@@ -2,7 +2,7 @@ from django.urls import reverse
 import pytest
 from pytest_django.asserts import assertTemplateUsed
 from tracker.models import Goal
-from tracker.factories import GoalFactory
+from tracker.factories import GoalFactory, PieceFactory
 from django.core.exceptions import ValidationError
 import datetime
 
@@ -45,3 +45,33 @@ def test_goals_view_with_multiple_goals(client):
     response = client.get(url)
     assert response.status_code == 200
     assert response.context['goal_list'].count() == 2
+
+@pytest.mark.django_db
+def test_pieces_view_with_no_pieces(client):
+    url = reverse('tracker:pieces')
+    response = client.get(url)
+    assert response.status_code == 200
+    assertTemplateUsed(response, 'tracker/pieces.html')
+
+@pytest.mark.django_db
+def test_pieces_view_with_multiple_pieces(client):
+    piece1 = PieceFactory()
+    piece2 = PieceFactory()
+    url = reverse('tracker:pieces')
+    response = client.get(url)
+    assert response.status_code == 200
+    assert response.context['piece_list'].count() == 2
+
+@pytest.mark.django_db
+def test_pieces_view_with_full_piece(client, piece):
+    piece.composer = 'J.S.Bach'
+    piece.opus = 'BWV 266'
+    piece.number = '1a'
+    piece.is_cleared = True
+    piece.is_mastered = True
+    piece.save()
+    url = reverse('tracker:pieces')
+    response = client.get(url)
+    assert response.status_code == 200
+    assert response.context['piece_list'].count() == 1
+    assert "Utwór opanowany" in response.content.decode('utf-8')
