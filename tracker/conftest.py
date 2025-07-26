@@ -1,6 +1,7 @@
 import pytest
 from django.test import Client
-from tracker.factories import GoalFactory
+from tracker.factories import GoalFactory, PieceFactory
+from pytest_factoryboy import register
 
 @pytest.fixture
 def client():
@@ -9,3 +10,5 @@ def client():
 @pytest.fixture
 def goal():
     return GoalFactory()
+
+register(PieceFactory)
