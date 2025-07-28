@@ -52,6 +52,7 @@ def test_goal_view_returns_404_with_non_existent_goal(client):
     response = client.get(url)
     assert response.status_code == 404
 
+@pytest.mark.django_db
 def test_goal_detail_view(client, goal):
     url = reverse('tracker:goal', args=[goal.pk])
     response = client.get(url)
