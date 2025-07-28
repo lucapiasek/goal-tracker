@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>
+    {% if goal.name %}
+    {{ goal.name }}
+    {% else %}
+    <i>Wpisz nazwę utworu</i>
+    {% endif %}
+</h2>
+<h3>
+    Data:
+    {% if goal.date %}
+    {{ goal.date }}
+    {% else %}
+    <i>Wpisz datę celu </i>
+    {% endif %}
+    Czas:
+    {% if goal.time %}
+    {{ goal.time }}
+    {% else %}
+    <i>Dodaj godzinę </i>
+    {% endif %}
+</h3>
+<label for="is_concluded">
+    Cel wypełniony:
+    <checkbox
+            checked="{% if goal.is_concluded %}checked{% endif %}"
+            name="is_concluded"
+            id="is_concluded" />
+</label>
+<fieldset>
+    <p>
+        {% if goal.additional_info %}
+        {{ goal.additional_info }}
+        {% else %}
+        <i>Dodatkowe informacje</i>
+        {% endif %}
+    </p>
+</fieldset>
+
+{% endblock %}
