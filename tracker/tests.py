@@ -47,6 +47,12 @@ def test_goals_view_with_multiple_goals(client):
     assert response.context['goal_list'].count() == 2
 
 @pytest.mark.django_db
+def test_goal_view_returns_404_with_non_existent_goal(client):
+    url = reverse('tracker:goal', args=[1])
+    response = client.get(url)
+    assert response.status_code == 404
+
+@pytest.mark.django_db
 def test_pieces_view_with_no_pieces(client):
     url = reverse('tracker:pieces')
     response = client.get(url)
