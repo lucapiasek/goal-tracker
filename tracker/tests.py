@@ -3,6 +3,7 @@ import pytest
 from pytest_django.asserts import assertTemplateUsed
 from tracker.models import Goal
 from tracker.factories import GoalFactory, PieceFactory
+from tracker.forms import GoalCreateForm
 from django.core.exceptions import ValidationError
 import datetime
 
@@ -59,6 +60,14 @@ def test_goal_detail_view(client, goal):
     assert response.status_code == 200
     assertTemplateUsed(response, 'tracker/goal.html')
     assert goal.pk == response.context['goal'].pk
+
+@pytest.mark.django_db
+def test_goal_create_view_get(client):
+    url = reverse('tracker:goal-create')
+    response = client.get(url)
+    assert response.status_code == 200
+    form = response.context['form']
+    assert isinstance(form, GoalCreateForm)
 
 
 @pytest.mark.django_db
