@@ -74,7 +74,7 @@ def test_goal_create_view_post(client):
     goal_data = {
         'name': "Koncert"
     }
-    response = client.post(url)
+    response = client.post(url, goal_data)
     assert response.status_code == 302
     assert Goal.objects.get(**goal_data)
 
