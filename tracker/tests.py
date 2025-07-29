@@ -66,8 +66,7 @@ def test_goal_create_view_get(client):
     url = reverse('tracker:goal-create')
     response = client.get(url)
     assert response.status_code == 200
-    form = response.context['form']
-    assert isinstance(form, GoalCreateForm)
+    assert isinstance(response.context["form"], GoalCreateForm)
 
 @pytest.mark.django_db
 def test_goal_create_view_post(client):
