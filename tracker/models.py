@@ -31,7 +31,7 @@ class Composer(models.Model):
     piece = models.ManyToManyField("Piece")
     name = models.CharField(max_length=49)
     surname = models.CharField(30)
-    display_name = models.CharField(maxlength=80)
+    display_name = models.CharField(max_length=80)
 
 class Collection(models.Model):
     name = models.CharField(max_length=50)
@@ -52,7 +52,7 @@ class PieceAdditionalInfo(models.Model):
 class Task(models.Model):
     goal = models.ForeignKey("Goal", blank=True, null=True)
     piece = models.ForeignKey("Piece", blank=True, null=True, on_delete=models.CASCADE)
-    part = models.ManyToManyField("Part", blank=True, null=True)
+    part = models.ManyToManyField("Part", blank=True)
     element = models.CharField(max_length=80, blank=True, null=True)
     method = models.CharField(max_length=100, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
@@ -71,6 +71,6 @@ class Part(models.Model):
 
 class Challenge(models.Model):
     task = models.ManyToManyField("Task")
-    minimum_number_of_days = models.IntegerField(min_number=1)
+    minimum_number_of_days = models.IntegerField()
     is_completed = models.NullBooleanField()
 
