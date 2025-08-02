@@ -16,6 +16,7 @@ class Goal(models.Model):
 class Piece(models.Model):
     goal = models.ManyToManyField("Goal", blank=True)
     name = models.CharField(max_length=200, blank=True, null=True)
+    composer = models.ManyToManyField("Composer")
     name_to_display = models.CharField(max_length=200, blank=True, null=True)
     color = models.CharField(max_length=60, blank=True, null=True) # todo: model Color - choices
     is_mastered = models.BooleanField(default=False)
@@ -28,7 +29,6 @@ class Piece(models.Model):
             raise ValidationError("At least one of the fields must be filled")
 
 class Composer(models.Model):
-    piece = models.ManyToManyField("Piece")
     name = models.CharField(max_length=49)
     surname = models.CharField(30)
     display_name = models.CharField(max_length=80)
