@@ -59,7 +59,7 @@ class Task(models.Model):
     element = models.CharField(max_length=80, blank=True, null=True)
     method = models.CharField(max_length=100, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
-    time = models.IntegerField(blank=True, null=True)
+    time = models.DurationField(blank=True, null=True)
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     repetitions_in_task = models.DecimalField(blank=True, null=True)
