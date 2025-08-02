@@ -17,7 +17,6 @@ class Piece(models.Model):
     goal = models.ManyToManyField("Goal", blank=True)
     name = models.CharField(max_length=200, blank=True, null=True)
     name_to_display = models.CharField(max_length=200, blank=True, null=True)
-    composer = models.CharField(max_length=200, blank=True, null=True) # todo: model Composer M2M relation
     color = models.CharField(max_length=60, blank=True, null=True) # todo: model Color - choices
     opus = models.CharField(max_length=30, blank=True, null=True)
     number = models.CharField(max_length=30, blank=True, null=True)
@@ -35,6 +34,12 @@ class Piece(models.Model):
         super().clean()
         if not (self.name or self.goal or (self.collection_set and self.number)):
             raise ValidationError("At least one of the fields must be filled")
+
+class Composer(models.Model):
+    piece = models.ManyToMany("Piece")
+    name = models.CharField(max_length=49)
+    surname = models.CharField(30)
+    display_name = models.CharField(maxlength=80)
 
 class Task(models.Model):
     goal = models.ForeignKey("Goal", blank=True, null=True)
