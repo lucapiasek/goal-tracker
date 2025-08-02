@@ -21,7 +21,7 @@ class Piece(models.Model):
     opus = models.CharField(max_length=30, blank=True, null=True)
     number = models.CharField(max_length=30, blank=True, null=True)
     genre = models.CharField(max_length=60, blank=True, null=True)
-    collection_set = models.CharField(max_length=120, blank=True, null=True) # todo: model set - one to many
+    collection = models.ManyToManyField("Collection", blank=True)
     style = models.CharField(max_length=100, blank=True, null=True)
     pitch = models.CharField(max_length=30, blank=True, null=True)
     type = models.CharField(max_length=70, blank=True, null=True) # todo?: model Type // M2M choices
@@ -32,19 +32,24 @@ class Piece(models.Model):
 
     def clean(self):
         super().clean()
-        if not (self.name or self.goal or (self.collection_set and self.number)):
+        if not (self.name or self.goal or (self.collection and self.number)):
             raise ValidationError("At least one of the fields must be filled")
 
 class Composer(models.Model):
-    piece = models.ManyToMany("Piece")
+    piece = models.ManyToManyField("Piece")
     name = models.CharField(max_length=49)
     surname = models.CharField(30)
     display_name = models.CharField(maxlength=80)
 
+class Collection(models.Model):
+    name = models.CharField(max_length=50)
+    composer = models.ForeignKey("Composer", blank=True, null=True, on_delete=models.CASCADE)
+    opus = models.CharField(max_length=10)
+
 class Task(models.Model):
     goal = models.ForeignKey("Goal", blank=True, null=True)
     piece = models.ForeignKey("Piece", blank=True, null=True, on_delete=models.CASCADE)
-    part = models.ManyToMany("Part", blank=True, null=True)
+    part = models.ManyToManyField("Part", blank=True, null=True)
     element = models.CharField(max_length=80, blank=True, null=True)
     method = models.CharField(max_length=100, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
@@ -62,7 +67,7 @@ class Part(models.Model):
     order_number = models.IntegerField(blank=True, null=True)
 
 class Challenge(models.Model):
-    task = models.ManyToMany("Task")
+    task = models.ManyToManyField("Task")
     minimum_number_of_days = models.IntegerField(min_number=1)
     is_completed = models.NullBooleanField()
 
