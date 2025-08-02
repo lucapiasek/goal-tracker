@@ -18,14 +18,6 @@ class Piece(models.Model):
     name = models.CharField(max_length=200, blank=True, null=True)
     name_to_display = models.CharField(max_length=200, blank=True, null=True)
     color = models.CharField(max_length=60, blank=True, null=True) # todo: model Color - choices
-    opus = models.CharField(max_length=30, blank=True, null=True)
-    number = models.CharField(max_length=30, blank=True, null=True)
-    genre = models.CharField(max_length=60, blank=True, null=True)
-    collection = models.ManyToManyField("Collection", blank=True)
-    style = models.CharField(max_length=100, blank=True, null=True)
-    pitch = models.CharField(max_length=30, blank=True, null=True)
-    type = models.CharField(max_length=70, blank=True, null=True) # todo?: model Type // M2M choices
-    time_to_master = models.DurationField(blank=True, null=True, help_text="Sugerowany czas opanowania utworu")
     is_mastered = models.BooleanField(default=False)
     is_archived = models.BooleanField(default=False)
     is_cleared = models.BooleanField(default=False)
@@ -45,6 +37,17 @@ class Collection(models.Model):
     name = models.CharField(max_length=50)
     composer = models.ForeignKey("Composer", blank=True, null=True, on_delete=models.CASCADE)
     opus = models.CharField(max_length=10)
+
+class PieceAdditionalInfo(models.Model):
+    piece = models.OneToOneField("Piece", on_delete=models.CASCADE)
+    opus = models.CharField(max_length=30, blank=True, null=True)
+    number = models.CharField(max_length=30, blank=True, null=True)
+    genre = models.CharField(max_length=60, blank=True, null=True)
+    collection = models.ManyToManyField("Collection", blank=True)
+    style = models.CharField(max_length=100, blank=True, null=True)
+    pitch = models.CharField(max_length=30, blank=True, null=True)
+    type = models.CharField(max_length=70, blank=True, null=True)
+    time_to_master = models.DurationField(blank=True, null=True, help_text="Sugerowany czas opanowania utworu")
 
 class Task(models.Model):
     goal = models.ForeignKey("Goal", blank=True, null=True)
