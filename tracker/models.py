@@ -36,3 +36,28 @@ class Piece(models.Model):
         if not (self.name or self.goal or (self.collection_set and self.number)):
             raise ValidationError("At least one of the fields must be filled")
 
+class Task(models.Model):
+    goal = models.ForeignKey("Goal", blank=True, null=True)
+    piece = models.ForeignKey("Piece", blank=True, null=True, on_delete=models.CASCADE)
+    part = models.ManyToMany("Part", blank=True, null=True)
+    element = models.CharField(max_length=80, blank=True, null=True)
+    method = models.CharField(max_length=100, blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
+    time = models.IntegerField(blank=True, null=True)
+    start_time = models.TimeField(blank=True, null=True)
+    end_time = models.TimeField(blank=True, null=True)
+    repetitions_in_task = models.DecimalField(blank=True, null=True)
+    is_completed = models.NullBooleanField()
+    completeness_percentage = models.IntegerField(blank=True, null=True)
+
+class Part(models.Model):
+    piece = models.ForeignKey("Piece", blank=True, null=True, on_delete=models.CASCADE)
+    master_part = models.ForeignKey("self", blank=True, null=True, on_delete=models.SET_NULL, related_name="inside_parts")
+    number_of_main_parts = models.IntegerField(blank=True, null=True)
+    order_number = models.IntegerField(blank=True, null=True)
+
+class Challenge(models.Model):
+    task = models.ManyToMany("Task")
+    minimum_number_of_days = models.IntegerField(min_number=1)
+    is_completed = models.NullBooleanField()
+
