@@ -44,10 +44,13 @@ class PieceAdditionalInfo(models.Model):
     number = models.CharField(max_length=30, blank=True, null=True)
     genre = models.CharField(max_length=60, blank=True, null=True)
     collection = models.ManyToManyField("Collection", blank=True)
-    style = models.CharField(max_length=100, blank=True, null=True)
     pitch = models.CharField(max_length=30, blank=True, null=True)
     type = models.CharField(max_length=70, blank=True, null=True)
     time_to_master = models.DurationField(blank=True, null=True, help_text="Sugerowany czas opanowania utworu")
+
+class Style(models.Model):
+    name = models.CharField(max_length=30)
+    piece = models.ManyToManyField("PieceAdditionalInfo")
 
 class Task(models.Model):
     goal = models.ForeignKey("Goal", blank=True, null=True)
