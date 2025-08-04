@@ -14,9 +14,9 @@ class Goal(models.Model):
             raise ValidationError("At least one of the fields must be filled.")
 
 class Piece(models.Model):
-    goal = models.ManyToManyField("Goal", blank=True)
+    goals = models.ManyToManyField("Goal", blank=True, related_name="pieces")
     name = models.CharField(max_length=200, blank=True, null=True)
-    composer = models.ManyToManyField("Composer")
+    composers = models.ManyToManyField("Composer", blank=True, related_name="pieces")
     name_to_display = models.CharField(max_length=200, blank=True, null=True)
     color = models.CharField(max_length=60, blank=True, null=True) # todo: model Color - choices
     is_mastered = models.BooleanField(default=False)
@@ -43,19 +43,19 @@ class PieceAdditionalInfo(models.Model):
     opus = models.CharField(max_length=30, blank=True, null=True)
     number = models.CharField(max_length=30, blank=True, null=True)
     genre = models.CharField(max_length=60, blank=True, null=True)
-    collection = models.ManyToManyField("Collection", blank=True)
+    collections = models.ManyToManyField("Collection", blank=True, related_name="pieces_additional_info")
     pitch = models.CharField(max_length=30, blank=True, null=True)
     type = models.CharField(max_length=70, blank=True, null=True)
     time_to_master = models.DurationField(blank=True, null=True, help_text="Sugerowany czas opanowania utworu")
 
 class Style(models.Model):
     name = models.CharField(max_length=30)
-    piece = models.ManyToManyField("PieceAdditionalInfo")
+    pieces = models.ManyToManyField("PieceAdditionalInfo", blank=True, related_name="pieces_additional_info")
 
 class Task(models.Model):
     goal = models.ForeignKey("Goal", blank=True, null=True)
     piece = models.ForeignKey("Piece", blank=True, null=True, on_delete=models.CASCADE)
-    part = models.ManyToManyField("Part", blank=True)
+    parts = models.ManyToManyField("Part", blank=True, related_name="tasks")
     element = models.CharField(max_length=80, blank=True, null=True)
     method = models.CharField(max_length=100, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
@@ -73,7 +73,7 @@ class Part(models.Model):
     order_number = models.IntegerField(blank=True, null=True)
 
 class Challenge(models.Model):
-    task = models.ManyToManyField("Task")
+    tasks = models.ManyToManyField("Task", related_name="challenges")
     minimum_number_of_days = models.IntegerField()
     is_completed = models.NullBooleanField()
 
