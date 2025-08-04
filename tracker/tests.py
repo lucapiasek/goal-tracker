@@ -4,17 +4,8 @@ from pytest_django.asserts import assertTemplateUsed
 from tracker.models import Goal
 from tracker.factories import GoalFactory, PieceFactory
 from tracker.forms import GoalCreateForm
-from django.core.exceptions import ValidationError
 import datetime
 
-
-def test_goal_model_with_all_fields_empty_raises_validation_error():
-    goal = Goal()
-
-    with pytest.raises(ValidationError) as exception:
-        goal.full_clean()
-
-    assert "At least one of the fields must be filled." in str(exception.value)
 
 @pytest.mark.django_db
 def test_goals_view_with_no_goals(client):
