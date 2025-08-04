@@ -2,11 +2,11 @@ from django.db import models
 from django.core.exceptions import ValidationError
 
 class Goal(models.Model):
-    name = models.CharField(max_length=200, blank=True, null=True)
+    name = models.CharField(max_length=200, blank=True)
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
     is_concluded = models.BooleanField(default=False)
-    additional_info = models.TextField(blank=True, null=True)
+    additional_info = models.TextField(blank=True)
 
     def clean(self):
         super().clean()
@@ -15,10 +15,10 @@ class Goal(models.Model):
 
 class Piece(models.Model):
     goals = models.ManyToManyField("Goal", blank=True, related_name="pieces")
-    name = models.CharField(max_length=200, blank=True, null=True)
+    name = models.CharField(max_length=200, blank=True)
     composers = models.ManyToManyField("Composer", blank=True, related_name="pieces")
-    name_to_display = models.CharField(max_length=200, blank=True, null=True)
-    color = models.CharField(max_length=60, blank=True, null=True) # todo: model Color - choices
+    name_to_display = models.CharField(max_length=200, blank=True)
+    color = models.CharField(max_length=60, blank=True) # todo: model Color - choices
     is_mastered = models.BooleanField(default=False)
     is_archived = models.BooleanField(default=False)
     is_cleared = models.BooleanField(default=False)
@@ -41,11 +41,11 @@ class Collection(models.Model):
 
 class PieceAdditionalInfo(models.Model):
     piece = models.OneToOneField("Piece", on_delete=models.CASCADE)
-    opus = models.CharField(max_length=30, blank=True, null=True)
-    number = models.CharField(max_length=30, blank=True, null=True)
-    genre = models.CharField(max_length=60, blank=True, null=True)
-    pitch = models.CharField(max_length=30, blank=True, null=True)
-    type = models.CharField(max_length=70, blank=True, null=True)
+    opus = models.CharField(max_length=30, blank=True)
+    number = models.CharField(max_length=30, blank=True)
+    genre = models.CharField(max_length=60, blank=True)
+    pitch = models.CharField(max_length=30, blank=True)
+    type = models.CharField(max_length=70, blank=True)
     time_to_master = models.DurationField(blank=True, null=True, help_text="Sugerowany czas opanowania utworu")
 
 class Style(models.Model):
@@ -56,8 +56,8 @@ class Task(models.Model):
     goal = models.ForeignKey("Goal", blank=True, null=True)
     piece = models.ForeignKey("Piece", blank=True, null=True, on_delete=models.CASCADE)
     parts = models.ManyToManyField("Part", blank=True, related_name="tasks")
-    element = models.CharField(max_length=80, blank=True, null=True)
-    method = models.CharField(max_length=100, blank=True, null=True)
+    element = models.CharField(max_length=80, blank=True)
+    method = models.CharField(max_length=100, blank=True)
     date = models.DateField(blank=True, null=True)
     time = models.DurationField(blank=True, null=True)
     start_time = models.TimeField(blank=True, null=True)
