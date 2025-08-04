@@ -58,13 +58,17 @@ class Task(models.Model):
     parts = models.ManyToManyField("Part", blank=True, related_name="tasks")
     element = models.CharField(max_length=80, blank=True)
     method = models.CharField(max_length=100, blank=True)
-    date = models.DateField(blank=True, null=True)
+    is_suggested = models.BooleanField(default=False)
+
+class Practice(models.Model):
+    task = models.ForeignKey("Task", on_delete=models.CASCADE)
+    date = models.DateField()
     time = models.DurationField(blank=True, null=True)
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
-    repetitions_in_task = models.DecimalField(blank=True, null=True)
+    repetitions = models.DecimalField(blank=True, null=True)
     is_completed = models.BooleanField(null=True)
-    completeness_percentage = models.IntegerField(blank=True, null=True)
+    completion_percentage = models.IntegerField(blank=True, null=True)
 
 class Part(models.Model):
     piece = models.ForeignKey("Piece", blank=True, null=True, on_delete=models.CASCADE)
