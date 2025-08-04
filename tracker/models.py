@@ -8,11 +8,6 @@ class Goal(models.Model):
     is_concluded = models.BooleanField(default=False)
     additional_info = models.TextField(blank=True)
 
-    def clean(self):
-        super().clean()
-        if not (self.name or self.additional_info):
-            raise ValidationError("At least one of the fields must be filled.")
-
 class Piece(models.Model):
     goals = models.ManyToManyField("Goal", blank=True, related_name="pieces")
     name = models.CharField(max_length=200, blank=True)
@@ -22,11 +17,6 @@ class Piece(models.Model):
     is_mastered = models.BooleanField(default=False)
     is_archived = models.BooleanField(default=False)
     is_cleared = models.BooleanField(default=False)
-
-    def clean(self):
-        super().clean()
-        if not (self.name or self.goal or (self.collection and self.number)):
-            raise ValidationError("At least one of the fields must be filled")
 
 class Composer(models.Model):
     name = models.CharField(max_length=49)
