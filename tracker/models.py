@@ -37,13 +37,13 @@ class Collection(models.Model):
     name = models.CharField(max_length=50)
     composer = models.ForeignKey("Composer", blank=True, null=True, on_delete=models.CASCADE)
     opus = models.CharField(max_length=10)
+    pieces = models.ManyToManyField("Piece", blank=True, related_name="collections")
 
 class PieceAdditionalInfo(models.Model):
     piece = models.OneToOneField("Piece", on_delete=models.CASCADE)
     opus = models.CharField(max_length=30, blank=True, null=True)
     number = models.CharField(max_length=30, blank=True, null=True)
     genre = models.CharField(max_length=60, blank=True, null=True)
-    collections = models.ManyToManyField("Collection", blank=True, related_name="pieces_additional_info")
     pitch = models.CharField(max_length=30, blank=True, null=True)
     type = models.CharField(max_length=70, blank=True, null=True)
     time_to_master = models.DurationField(blank=True, null=True, help_text="Sugerowany czas opanowania utworu")
