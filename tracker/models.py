@@ -63,7 +63,7 @@ class Task(models.Model):
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     repetitions_in_task = models.DecimalField(blank=True, null=True)
-    is_completed = models.NullBooleanField()
+    is_completed = models.BooleanField(null=True)
     completeness_percentage = models.IntegerField(blank=True, null=True)
 
 class Part(models.Model):
@@ -75,5 +75,5 @@ class Part(models.Model):
 class Challenge(models.Model):
     tasks = models.ManyToManyField("Task", related_name="challenges")
     minimum_number_of_days = models.IntegerField()
-    is_completed = models.NullBooleanField()
+    is_completed = models.BooleanField(null=True)
 
