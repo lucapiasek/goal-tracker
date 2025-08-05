@@ -19,7 +19,7 @@ class Piece(models.Model):
 
 class Composer(models.Model):
     names = models.CharField(max_length=49, blank=True)
-    surname = models.CharField(max_length=30)
+    surname = models.CharField(max_length=30, blank=True)
     display_name = models.CharField(max_length=80, blank=True)
 
 class Collection(models.Model):
@@ -28,18 +28,25 @@ class Collection(models.Model):
     opus = models.CharField(max_length=10)
     pieces = models.ManyToManyField("Piece", blank=True, related_name="collections")
 
-class PieceAdditionalInfo(models.Model):
+class PieceInformation(models.Model):
     piece = models.OneToOneField("Piece", on_delete=models.CASCADE)
     opus = models.CharField(max_length=30, blank=True)
     number = models.CharField(max_length=30, blank=True)
-    genre = models.CharField(max_length=60, blank=True)
     pitch = models.CharField(max_length=30, blank=True)
     type = models.CharField(max_length=70, blank=True)
     time_to_master = models.DurationField(blank=True, null=True, help_text="Sugerowany czas opanowania utworu")
 
+class Type(models.Model):
+    type = models.CharField(max_length=50)
+    pieces = models.ManyToManyField("PieceInformation", blank=True, related_name="types")
+
+class Genre(models.Model):
+    genre = models.CharField(max_length=50)
+    pieces = models.ManyToManyField("PieceInformation", blank=True, related_name="genres")
+
 class Style(models.Model):
     style = models.CharField(max_length=30)
-    pieces = models.ManyToManyField("PieceAdditionalInfo", blank=True, related_name="pieces_additional_info")
+    pieces = models.ManyToManyField("PieceInformation", blank=True, related_name="styles")
 
 class Task(models.Model):
     goal = models.ForeignKey("Goal", blank=True, null=True)
