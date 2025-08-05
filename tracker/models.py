@@ -18,7 +18,7 @@ class Piece(models.Model):
     is_cleared = models.BooleanField(default=False)
 
 class Composer(models.Model):
-    name = models.CharField(max_length=49, blank=True)
+    names = models.CharField(max_length=49, blank=True)
     surname = models.CharField(max_length=30)
     display_name = models.CharField(max_length=80, blank=True)
 
@@ -38,7 +38,7 @@ class PieceAdditionalInfo(models.Model):
     time_to_master = models.DurationField(blank=True, null=True, help_text="Sugerowany czas opanowania utworu")
 
 class Style(models.Model):
-    name = models.CharField(max_length=30)
+    style = models.CharField(max_length=30)
     pieces = models.ManyToManyField("PieceAdditionalInfo", blank=True, related_name="pieces_additional_info")
 
 class Task(models.Model):
