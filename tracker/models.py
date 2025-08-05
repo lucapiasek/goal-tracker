@@ -18,9 +18,9 @@ class Piece(models.Model):
     is_cleared = models.BooleanField(default=False)
 
 class Composer(models.Model):
-    name = models.CharField(max_length=49)
-    surname = models.CharField(30)
-    display_name = models.CharField(max_length=80)
+    name = models.CharField(max_length=49, blank=True)
+    surname = models.CharField(max_length=30)
+    display_name = models.CharField(max_length=80, blank=True)
 
 class Collection(models.Model):
     name = models.CharField(max_length=50)
