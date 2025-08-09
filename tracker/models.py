@@ -7,6 +7,9 @@ class Goal(models.Model):
     is_concluded = models.BooleanField(default=False)
     additional_info = models.TextField(blank=True)
 
+    def __str__(self):
+        return f"{self.name}{' - ' if self.date or self.time else ''}{self.date if self.date else ''}{', ' if self.date and self.time else ''}{self.time if self.time else ''}"
+
 class Piece(models.Model):
     goals = models.ManyToManyField("Goal", blank=True, related_name="pieces")
     name = models.CharField(max_length=200, blank=True)
@@ -17,16 +20,25 @@ class Piece(models.Model):
     is_archived = models.BooleanField(default=False)
     is_cleared = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.name_to_display if self.name_to_display else self.name
+
 class Composer(models.Model):
     names = models.CharField(max_length=49, blank=True)
     surname = models.CharField(max_length=30, blank=True)
     display_name = models.CharField(max_length=80, blank=True)
+
+    def __str__(self):
+        return self.display_name if self.display_name else self.names + ' ' + self.surname
 
 class Collection(models.Model):
     name = models.CharField(max_length=50)
     composer = models.ForeignKey("Composer", blank=True, null=True, on_delete=models.CASCADE)
     opus = models.CharField(max_length=10)
     pieces = models.ManyToManyField("Piece", blank=True, related_name="collections")
+
+    def __str__(self):
+        return self.name
 
 class PieceInformation(models.Model):
     piece = models.OneToOneField("Piece", on_delete=models.CASCADE)
@@ -36,17 +48,29 @@ class PieceInformation(models.Model):
     type = models.CharField(max_length=70, blank=True)
     time_to_master = models.DurationField(blank=True, null=True, help_text="Sugerowany czas opanowania utworu")
 
+    def __str__(self):
+        return self.opus + ' ' + self.number
+
 class Type(models.Model):
     type = models.CharField(max_length=50)
     pieces = models.ManyToManyField("PieceInformation", blank=True, related_name="types")
+
+    def __str__(self):
+        return self.type
 
 class Genre(models.Model):
     genre = models.CharField(max_length=50)
     pieces = models.ManyToManyField("PieceInformation", blank=True, related_name="genres")
 
+    def __str__(self):
+        return self.genre
+
 class Style(models.Model):
     style = models.CharField(max_length=30)
     pieces = models.ManyToManyField("PieceInformation", blank=True, related_name="styles")
+
+    def __str__(self):
+        return self.style
 
 class Task(models.Model):
     goal = models.ForeignKey("Goal", blank=True, null=True)
@@ -55,6 +79,9 @@ class Task(models.Model):
     element = models.CharField(max_length=80, blank=True)
     method = models.CharField(max_length=100, blank=True)
     is_suggested = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.piece if self.piece else self.goal} {self.parts if self.parts else ''} {self.element if self.element else ''} {self.method if self.method else ''}"
 
 class Practice(models.Model):
     task = models.ForeignKey("Task", on_delete=models.CASCADE)
@@ -65,6 +92,9 @@ class Practice(models.Model):
     repetitions = models.DecimalField(blank=True, null=True)
     is_completed = models.BooleanField(null=True)
     completion_percentage = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.task}, {self.date}, {self.start_time if self.start_time else ''} {self.end_time if self.end_time else ''}"
 
 class Part(models.Model):
     piece = models.ForeignKey("Piece", blank=True, null=True, on_delete=models.CASCADE)
