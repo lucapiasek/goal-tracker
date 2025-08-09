@@ -97,10 +97,14 @@ class Practice(models.Model):
         return f"{self.task}, {self.date}, {self.start_time if self.start_time else ''} {self.end_time if self.end_time else ''}"
 
 class Part(models.Model):
+    name = models.CharField(max_length=80, blank=True)
     piece = models.ForeignKey("Piece", blank=True, null=True, on_delete=models.CASCADE)
     master_part = models.ForeignKey("self", blank=True, null=True, on_delete=models.SET_NULL, related_name="inside_parts")
     number_of_main_parts = models.IntegerField(blank=True, null=True)
     order_number = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.name if self.name else ''} {self.order_number if self.order_number else ''} - {self.piece if self.piece else ''}"
 
 class Challenge(models.Model):
     tasks = models.ManyToManyField("Task", related_name="challenges")
