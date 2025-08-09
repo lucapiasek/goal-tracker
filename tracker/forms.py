@@ -1,12 +1,6 @@
-from django.forms import ModelForm
-from tracker.models import Goal
+from django.forms import Form
 
-class GoalCreateForm(ModelForm):
+class GoalCreateForm(Form):
     @property
     def title(self):
         return "Cel"
-
-    class Meta:
-        model = Goal
-        fields = "__all__"
-
