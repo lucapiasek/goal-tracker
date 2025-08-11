@@ -89,7 +89,7 @@ class Practice(models.Model):
     time = models.DurationField(blank=True, null=True)
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
-    repetitions = models.DecimalField(blank=True, null=True)
+    repetitions = models.DecimalField(decimal_places=1, max_digits=3, blank=True, null=True)
     is_completed = models.BooleanField(null=True)
     completion_percentage = models.IntegerField(blank=True, null=True)
 
