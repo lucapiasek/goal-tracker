@@ -73,7 +73,7 @@ class Style(models.Model):
         return self.style
 
 class Task(models.Model):
-    goal = models.ForeignKey("Goal", blank=True, null=True)
+    goal = models.ForeignKey("Goal", blank=True, null=True, on_delete=models.CASCADE)
     piece = models.ForeignKey("Piece", blank=True, null=True, on_delete=models.CASCADE)
     parts = models.ManyToManyField("Part", blank=True, related_name="tasks")
     element = models.CharField(max_length=80, blank=True)
