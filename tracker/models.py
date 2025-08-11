@@ -1,21 +1,21 @@
 from django.db import models
 
 class Goal(models.Model):
-    name = models.CharField(max_length=200, blank=True)
+    name = models.CharField(max_length=200, blank=True, default='')
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
     is_concluded = models.BooleanField(default=False)
-    additional_info = models.TextField(blank=True)
+    additional_info = models.TextField(blank=True, default='')
 
     def __str__(self):
         return f"{self.name}{' - ' if self.date or self.time else ''}{self.date if self.date else ''}{', ' if self.date and self.time else ''}{self.time if self.time else ''}"
 
 class Piece(models.Model):
     goals = models.ManyToManyField("Goal", blank=True, related_name="pieces")
-    name = models.CharField(max_length=200, blank=True)
+    name = models.CharField(max_length=200, blank=True, default='')
     composers = models.ManyToManyField("Composer", blank=True, related_name="pieces")
-    name_to_display = models.CharField(max_length=200, blank=True)
-    color = models.CharField(max_length=60, blank=True) # todo: model Color - choices
+    name_to_display = models.CharField(max_length=200, blank=True, default='')
+    color = models.CharField(max_length=60, blank=True, default='') # todo: model Color - choices
     is_mastered = models.BooleanField(default=False)
     is_archived = models.BooleanField(default=False)
     is_cleared = models.BooleanField(default=False)
@@ -24,9 +24,9 @@ class Piece(models.Model):
         return self.name_to_display if self.name_to_display else self.name
 
 class Composer(models.Model):
-    names = models.CharField(max_length=49, blank=True)
-    surname = models.CharField(max_length=30, blank=True)
-    display_name = models.CharField(max_length=80, blank=True)
+    names = models.CharField(max_length=49, blank=True, default='')
+    surname = models.CharField(max_length=30, blank=True, default='')
+    display_name = models.CharField(max_length=80, blank=True, default='')
 
     def __str__(self):
         return self.display_name if self.display_name else self.names + ' ' + self.surname
@@ -42,10 +42,10 @@ class Collection(models.Model):
 
 class PieceInformation(models.Model):
     piece = models.OneToOneField("Piece", on_delete=models.CASCADE)
-    opus = models.CharField(max_length=30, blank=True)
-    number = models.CharField(max_length=30, blank=True)
-    pitch = models.CharField(max_length=30, blank=True)
-    type = models.CharField(max_length=70, blank=True)
+    opus = models.CharField(max_length=30, blank=True, default='')
+    number = models.CharField(max_length=30, blank=True, default='')
+    pitch = models.CharField(max_length=30, blank=True, default='')
+    type = models.CharField(max_length=70, blank=True, default='')
     time_to_master = models.DurationField(blank=True, null=True, help_text="Sugerowany czas opanowania utworu")
 
     def __str__(self):
@@ -59,14 +59,14 @@ class Type(models.Model):
         return self.type
 
 class Genre(models.Model):
-    genre = models.CharField(max_length=50)
+    genre = models.CharField(max_length=50, default='')
     pieces = models.ManyToManyField("PieceInformation", blank=True, related_name="genres")
 
     def __str__(self):
         return self.genre
 
 class Style(models.Model):
-    style = models.CharField(max_length=30)
+    style = models.CharField(max_length=30, default='')
     pieces = models.ManyToManyField("PieceInformation", blank=True, related_name="styles")
 
     def __str__(self):
@@ -76,8 +76,8 @@ class Task(models.Model):
     goal = models.ForeignKey("Goal", blank=True, null=True, on_delete=models.CASCADE)
     piece = models.ForeignKey("Piece", blank=True, null=True, on_delete=models.CASCADE)
     parts = models.ManyToManyField("Part", blank=True, related_name="tasks")
-    element = models.CharField(max_length=80, blank=True)
-    method = models.CharField(max_length=100, blank=True)
+    element = models.CharField(max_length=80, blank=True, default='')
+    method = models.CharField(max_length=100, blank=True, default='')
     is_suggested = models.BooleanField(default=False)
 
     def __str__(self):
@@ -97,7 +97,7 @@ class Practice(models.Model):
         return f"{self.task}, {self.date}, {self.start_time if self.start_time else ''} {self.end_time if self.end_time else ''}"
 
 class Part(models.Model):
-    name = models.CharField(max_length=80, blank=True)
+    name = models.CharField(max_length=80, blank=True, default='')
     piece = models.ForeignKey("Piece", blank=True, null=True, on_delete=models.CASCADE)
     master_part = models.ForeignKey("self", blank=True, null=True, on_delete=models.SET_NULL, related_name="inside_parts")
     number_of_main_parts = models.IntegerField(blank=True, null=True)
