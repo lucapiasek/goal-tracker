@@ -116,6 +116,8 @@ class Part(models.Model):
 class Challenge(models.Model):
     user = models.ForeignKey(settings.AUTH_MODEL_USER, on_delete=models.CASCADE)
     tasks = models.ManyToManyField("Task", related_name="challenges")
-    minimum_number_of_days = models.IntegerField()
+    minimum_number_of_days = models.IntegerField(blank=True, null=True)
+    minimum_number_of_repetitions = models.IntegerField(blank=True, null=True)
+    minimum_total_repetitions = models.IntegerField(blank=True, null=True)
     is_completed = models.BooleanField(null=True)
 
