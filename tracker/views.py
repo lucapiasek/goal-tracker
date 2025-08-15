@@ -15,7 +15,8 @@ class GoalDetailView(View):
 
 class GoalCreateView(View):
     def get(self, request):
-        form = GoalCreateForm()
+        date = request.session.get['last_visited_date']
+        form = GoalCreateForm(date=date)
         return render(request, 'tracker/create_form.html', {'form': form})
 
     def post(self, request):
