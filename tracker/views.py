@@ -21,7 +21,18 @@ class GoalCreateView(View):
     def post(self, request):
         form = GoalCreateForm(request.POST)
         if form.is_valid():
-            goal = form.save()
+            cleaned_data = form.cleaned_data
+            piece = cleaned_data['piece']
+            pieces = cleaned_data['pieces']
+            del cleaned_data['piece']
+            del cleaned_data['pieces']
+            cleaned_data['user'] = request.user.pk
+            goal = Goal(**cleaned_data)
+            if piece:
+                goal.pieces.create(piece)
+            if pieces.exists():
+                goal.pieces.add(pieces)
+
             return redirect('tracker:goals')
         return render(request, 'tracker/create_form.html', {'form': form})
 
