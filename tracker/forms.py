@@ -23,6 +23,12 @@ class GoalCreateForm(forms.Form):
     time = forms.TimeField(label="Godz.", required=False)
     additional_info = forms.CharField(label="Dodatkowe informacje", required=False, )
 
+    def init(self, *args, user=None, **kwargs):
+        # Czy popować usera z kwargs?
+        super().__init__(*args, **kwargs)
+        if user is not None:
+            self.fields['pieces'].queryset = Piece.objects.filter(user=user)
+
     def clean(self):
         cleaned_data = super().clean()
         name = cleaned_data.get("name")
@@ -49,7 +55,7 @@ class GoalUpdateForm(forms.ModelForm):
         # Czy popować usera z kwargs?
         super().__init__(*args, **kwargs)
         if user is not None:
-            self.fields['pieces'].queryset = Pieces.objects.filter(user=user)
+            self.fields['pieces'].queryset = Piece.objects.filter(user=user)
 
     def clean(self):
         cleaned_data = super().clean()
