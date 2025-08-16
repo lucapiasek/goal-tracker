@@ -37,10 +37,6 @@ class GoalCreateForm(forms.Form):
             self.add_error("pieces", err)
             self.add_error("additional_info", err)
 
-    @property
-    def title(self):
-        return "Cel"
-
 class GoalUpdateForm(forms.ModelForm):
     class Meta:
         model = Goal
