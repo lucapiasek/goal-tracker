@@ -18,7 +18,7 @@ date_input_formats = [
 class GoalCreateForm(forms.Form):
     name = forms.CharField(max_length=200, label='Cel', required=False, empty_value='')
     piece = forms.CharField(max_length=200, label='Utwór', required=False, empty_value='')
-    pieces = forms.ModelMultipleChoiceField(queryset=Piece.objects.all(), label="Utwory", required=False, widget=forms.CheckboxSelectMultiple)
+    pieces = forms.ModelMultipleChoiceField(queryset=Piece.objects.none(), label="Utwory", required=False, widget=forms.CheckboxSelectMultiple)
     date = forms.DateField(required=False, label='Data', input_formats=date_input_formats)
     time = forms.TimeField(label="Godz.", required=False)
     additional_info = forms.CharField(label="Dodatkowe informacje", required=False, )
@@ -38,10 +38,18 @@ class GoalCreateForm(forms.Form):
             self.add_error("additional_info", err)
 
 class GoalUpdateForm(forms.ModelForm):
+    pieces = forms.ModelMultipleChoiceField(queryset=Piece.objects.none(), label="Utwory", required=False, widget=forms.CheckboxSelectMultiple)
+
     class Meta:
         model = Goal
         use_required_attribute = False
         fields = ('name', 'date', 'time', 'is_concluded', 'additional_info')
+
+    def init(self, *args, user=None, **kwargs):
+        # Czy popować usera z kwargs?
+        super().__init__(*args, **kwargs)
+        if user is not None:
+            self.fields['pieces'].queryset = Pieces.objects.filter(user=user)
 
     def clean(self):
         cleaned_data = super().clean()
