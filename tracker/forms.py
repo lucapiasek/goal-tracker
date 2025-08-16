@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Piece
+from .models import Piece, Goal
 
 date_input_formats = [
         "%d.%m.%Y",
@@ -40,3 +40,21 @@ class GoalCreateForm(forms.Form):
     @property
     def title(self):
         return "Cel"
+
+class GoalUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Goal
+        use_required_attribute = False
+        fields = ('name', 'date', 'time', 'is_concluded', 'additional_info')
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get("name")
+        pieces = cleaned_data.get("pieces")
+        additional_info = cleaned_data.get("additional_info")
+
+        if not name and not pieces.exists() and not additional_info:
+            err = ValidationError("Conajmniej jedno z tych pól musi być wypełnione")
+            self.add_error("name", err)
+            self.add_error("pieces", err)
+            self.add_error("additional_info", err)
