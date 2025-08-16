@@ -30,10 +30,10 @@ class GoalCreateView(View):
             pieces = cleaned_data['pieces']
             del cleaned_data['piece']
             del cleaned_data['pieces']
-            cleaned_data['user'] = request.user.pk
-            goal = Goal(**cleaned_data)
+            cleaned_data['user'] = request.user
+            goal = Goal.objects.create(**cleaned_data)
             if piece:
-                goal.pieces.create(piece)
+                goal.pieces.create(name_to_display=f"{piece}", user=request.user)
             if pieces.exists():
                 goal.pieces.add(pieces)
 
