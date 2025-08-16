@@ -3,6 +3,7 @@ from .models import Goal, Piece
 from .forms import GoalCreateForm
 from django.views.generic import ListView
 from django.views import View
+import datetime
 
 class GoalsView(ListView):
     template_name = "tracker/goals.html"
@@ -15,8 +16,10 @@ class GoalDetailView(View):
 
 class GoalCreateView(View):
     def get(self, request):
-        date = request.session.get['last_visited_date']
-        form = GoalCreateForm(date=date)
+        date = request.session.get('last_visited_date', None)
+        if date:
+            date = datetime.date(**date)
+        form = GoalCreateForm(initial={'date': date})
         return render(request, 'tracker/create_form.html', {'form': form})
 
     def post(self, request):
