@@ -3,11 +3,18 @@ from .models import Goal, Piece
 from .forms import GoalCreateForm
 from django.views.generic import ListView
 from django.views import View
+from django.contrib.auth import get_user_model
 import datetime
+
+UserModel = get_user_model()
 
 class GoalsView(ListView):
     template_name = "tracker/goals.html"
     model = Goal
+
+    def get_queryset(self):
+        user = UserModel.objects.get(username=self.kwargs['username'])
+        return Goal.objects.filter(user=user)
 
 class GoalDetailView(View):
     def get(self, request, pk):
