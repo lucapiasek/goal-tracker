@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Goal, Piece
-from .forms import GoalCreateForm
+from .forms import GoalCreateForm, GoalUpdateForm
 from django.views.generic import ListView
 from django.views import View
 from django.contrib.auth import get_user_model
