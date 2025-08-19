@@ -23,8 +23,8 @@ class GoalCreateForm(forms.Form):
     time = forms.TimeField(label="Godz.", required=False)
     additional_info = forms.CharField(label="Dodatkowe informacje", required=False, )
 
-    def init(self, *args, user=None, **kwargs):
-        # Czy popować usera z kwargs?
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         if user is not None:
             self.fields['pieces'].queryset = Piece.objects.filter(user=user)
@@ -51,8 +51,9 @@ class GoalUpdateForm(forms.ModelForm):
         use_required_attribute = False
         fields = ('name', 'date', 'time', 'is_concluded', 'additional_info')
 
-    def init(self, *args, user=None, **kwargs):
-        # Czy popować usera z kwargs?
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         if user is not None:
             self.fields['pieces'].queryset = Piece.objects.filter(user=user)
