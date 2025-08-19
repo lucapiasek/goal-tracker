@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>{{ form.title }}</h1>
+<h1>{{ page_title }}</h1>
 <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
