@@ -131,7 +131,22 @@ class MyHTMLCalendar(calendar.LocaleHTMLCalendar):
 class YearView(View):
     def get(self, request, username, year):
         owner = get_object_or_404(UserModel, username=username)
-        now = timezone.now()
         c = MyHTMLCalendar(goals=Goal.objects.filter(user=owner), practice=Practice.objects.filter(task__user=owner))
         html_calendar = c.formatyear(year)
         return render(request, 'tracker_calendar/year_view.html', {'cal': html_calendar})
+
+class DayView(View):
+    def get(self, request, username, year, month, day):
+        owner = get_object_or_404(UserModel, username=username)
+        date = datetime.date(year=year, month=month, day=day)
+        goal_list = Goal.objects.filter(user=owner).filter(date=date)
+        practice_list = Practice.objects.filter(task__user=owner).filter(date=date)
+        return render(
+            request,
+            'tracker_calendar/day_view.html',
+            context={
+                'date': date,
+                'goal_list': goal_list,
+                'practice_list': practice_list
+            })
+

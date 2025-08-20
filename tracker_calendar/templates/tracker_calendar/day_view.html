@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <h1>{{ date }}</h1>
+    {% if goal_list %}
+    <h2>Cele</h2>
+    {%  endif %}
+    {% for goal in goal_list %}
+        {{ goal }}
+    {%  empty %}
+    {% endfor %}
+
+    {% if practice_list %}
+    <h2>Ćwiczenie</h2>
+    {% endif %}
+    {% for practice in practice_list %}
+    {{ practice }}
+    {% empty %}
+    {% endfor %}
+
+{% endblock %}
