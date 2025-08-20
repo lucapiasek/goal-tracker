@@ -26,7 +26,7 @@ class GoalListView(ListView):
 class GoalDetailView(View):
     def get(self, request, pk):
         goal = get_object_or_404(Goal, pk=pk)
-        return render(request, 'tracker/goal.html', {'goal': goal, 'page_title': 'Cel'})
+        return render(request, 'tracker/goal_detail.html', {'goal': goal, 'page_title': 'Cel'})
 
 class GoalCreateView(View):
     def get(self, request, username):

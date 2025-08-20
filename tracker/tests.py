@@ -30,7 +30,7 @@ def test_goal_list_view_with_one_full_goal(client, goal):
     assert response.context['goal_list'].count() == 1
 
 @pytest.mark.django_db
-def test_goals_view_with_multiple_goals(client):
+def test_goal_list_view_with_multiple_goals(client):
     goal1 = GoalFactory()
     goal2 = GoalFactory()
     url = reverse('tracker:goal_list')
@@ -39,17 +39,17 @@ def test_goals_view_with_multiple_goals(client):
     assert response.context['goal_list'].count() == 2
 
 @pytest.mark.django_db
-def test_goal_view_returns_404_with_non_existent_goal(client):
-    url = reverse('tracker:goal', args=[1])
+def test_goal_detail_view_returns_404_with_non_existent_goal(client):
+    url = reverse('tracker:goal_detail', args=[1])
     response = client.get(url)
     assert response.status_code == 404
 
 @pytest.mark.django_db
 def test_goal_detail_view(client, goal):
-    url = reverse('tracker:goal', args=[goal.pk])
+    url = reverse('tracker:goal_detail', args=[goal.pk])
     response = client.get(url)
     assert response.status_code == 200
-    assertTemplateUsed(response, 'tracker/goal.html')
+    assertTemplateUsed(response, 'tracker/goal_detail.html')
     assert goal.pk == response.context['goal'].pk
 
 @pytest.mark.django_db
