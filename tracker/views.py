@@ -15,8 +15,8 @@ def is_teacher(user, owner):
     if user.teacher.is_teacher:
         return user.teacher.students.all().contains(owner)
 
-class GoalsView(ListView):
-    template_name = "tracker/goals.html"
+class GoalListView(ListView):
+    template_name = "tracker/goal_list.html"
     model = Goal
 
     def get_queryset(self):
@@ -55,7 +55,7 @@ class GoalCreateView(View):
             if pieces.exists():
                 goal.pieces.add(pieces)
 
-            return redirect('tracker:goals')
+            return redirect('tracker:goal_list')
         return render(request, 'tracker/create_form.html', {'form': form})
 
 class GoalUpdateView(View):
