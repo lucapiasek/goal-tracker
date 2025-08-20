@@ -4,5 +4,5 @@ from . import views
 app_name = 'tracker_calendar'
 
 urlpatterns = [
-    path('user/create/', views.MonthView.as_view(), name='create'),
+    path('<str:username>/<int:year>/', views.YearView.as_view(), name='create'),
 ]

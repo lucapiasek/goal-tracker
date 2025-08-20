@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tracker.apps.TrackerConfig',
     'accounts.apps.AccountsConfig',
-    'tracker_calendar'
+    'tracker_calendar.apps.TrackerCalendarConfig'
 ]
 
 MIDDLEWARE = [

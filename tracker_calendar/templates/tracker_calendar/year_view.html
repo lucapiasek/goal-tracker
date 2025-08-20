@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+    <link rel="stylesheet" href="{ static 'tracker_calendar/year_view.css'" />
+{{ cal|safe }}
+{% endblock %}
