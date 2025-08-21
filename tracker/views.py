@@ -24,7 +24,7 @@ class GoalListView(ListView):
         return Goal.objects.filter(user=user)
 
 class GoalDetailView(View):
-    def get(self, request, pk):
+    def get(self, request, username, pk):
         goal = get_object_or_404(Goal, pk=pk)
         return render(request, 'tracker/goal_detail.html', {'goal': goal, 'page_title': 'Cel'})
 
@@ -37,7 +37,7 @@ class GoalCreateView(View):
         form = GoalCreateForm(user=user, initial={
             'date': date
         })
-        return render(request, 'tracker/create_form.html', {'form': form})
+        return render(request, 'tracker/create_form.html', {'form': form, 'page_title': 'Dodaj cel'})
 
     def post(self, request, username):
         user = get_object_or_404(UserModel, username=username)
