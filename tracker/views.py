@@ -20,8 +20,8 @@ class GoalListView(ListView):
     model = Goal
 
     def get_queryset(self):
-        user = UserModel.objects.get(username=self.kwargs['username'])
-        return Goal.objects.filter(user=user)
+        owner = UserModel.objects.get(username=self.kwargs['username'])
+        return Goal.objects.filter(user=owner)
 
 class GoalDetailView(View):
     def get(self, request, username, pk):
@@ -30,17 +30,17 @@ class GoalDetailView(View):
 
 class GoalCreateView(View):
     def get(self, request, username):
-        user = UserModel.objects.get(username=username)
+        owner = UserModel.objects.get(username=username)
         date = request.session.get('last_visited_date', None)
         if date:
             date = datetime.date(**date)
-        form = GoalCreateForm(user=user, initial={
+        form = GoalCreateForm(user=owner, initial={
             'date': date
         })
         return render(request, 'tracker/create_form.html', {'form': form, 'page_title': 'Dodaj cel'})
 
     def post(self, request, username):
-        user = get_object_or_404(UserModel, username=username)
+        owner = get_object_or_404(UserModel, username=username)
         form = GoalCreateForm(request.POST)
         if form.is_valid():
             cleaned_data = form.cleaned_data
@@ -48,10 +48,10 @@ class GoalCreateView(View):
             pieces = cleaned_data['pieces']
             del cleaned_data['piece']
             del cleaned_data['pieces']
-            cleaned_data['user'] = user
+            cleaned_data['user'] = owner
             goal = Goal.objects.create(**cleaned_data)
             if piece:
-                goal.pieces.create(name_to_display=f"{piece}", user=user)
+                goal.pieces.create(name_to_display=f"{piece}", user=owner)
             if pieces.exists():
                 goal.pieces.add(pieces)
 
@@ -60,9 +60,9 @@ class GoalCreateView(View):
 
 class GoalUpdateView(View):
     def get(self, request, username, pk):
-        user = get_object_or_404(UserModel, username=username)
+        owner = get_object_or_404(UserModel, username=username)
         goal = get_object_or_404(Goal, pk=pk)
-        form = GoalUpdateForm(instance=goal, user=user)
+        form = GoalUpdateForm(instance=goal, user=owner)
         return render(request, 'tracker/create_form.html', {'form': form})
 
     def post (self, request, username, pk):
