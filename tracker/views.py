@@ -20,8 +20,13 @@ class GoalListView(ListView):
     model = Goal
 
     def get_queryset(self):
-        owner = UserModel.objects.get(username=self.kwargs['username'])
+        owner = get_object_or_404(UserModel, username=self.kwargs['username'])
         return Goal.objects.filter(user=owner)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['owner_username'] = self.kwargs['username']
+        return context
 
 class GoalDetailView(View):
     def get(self, request, username, pk):
@@ -70,6 +75,7 @@ class GoalUpdateView(View):
         form = GoalUpdateForm()
         if form.is_valid():
             form.save()
+        return redirect('tracker:goal_detail', goal.user.username, goal.pk)
 
 class GoalDeleteView(View):
     def get(self, request, username, pk):

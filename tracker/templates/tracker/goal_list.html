@@ -3,22 +3,22 @@
 <h2>Cele</h2>
 <table>
     <caption>Cele</caption>
-    <a href="{% url 'tracker:goal_detail' goal.user.username goal.pk %}"><button type="button">Nowy cel</button></a>
+    <a href="{% url 'tracker:goal_create' username=owner_username %}"><button type="button">Nowy cel</button></a>
     {% for goal in goal_list %}
     <tr>
-        <td><a href="{% url 'tracker:goal_detail' goal.user.username goal.pk %}">{{ goal.name }}</a></td>
+        <td><a href="{% url 'tracker:goal_detail' username=goal.user.username pk=goal.pk %}">{{ goal.name }}</a></td>
         {% if goal.date %}
-            <td><a href="{% url 'tracker:goal_detail' goal.user.username goal.pk %}">{{ goal.date }}</a></td>
+            <td><a href="{% url 'tracker:goal_detail' username=goal.user.username pk=goal.pk %}">{{ goal.date }}</a></td>
         {% endif %}
         {% if goal.time %}
-            <td><a href="{% url 'tracker:goal_detail' goal.user.username goal.pk %}">{{ goal.time }}<</a>/td>
+            <td><a href="{% url 'tracker:goal_detail' username=goal.user.username pk=goal.pk %}">{{ goal.time }}<</a>/td>
         {% endif %}
         <td><input type="checkbox" {% if goal.is_concluded %}checked="checked" {% endif %}/><td></td>
     </tr>
         {% if goal.additional_info %}
             <tr>
                 <td>
-                    <a href="{% url 'tracker:goal_detail' goal.user.username goal.pk %}">{{ goal.additional_info }}</a>
+                    <a href="{% url 'tracker:goal_detail' username=goal.user.username pk=goal.pk %}">{{ goal.additional_info }}</a>
                 </td>
             </tr>
         {% endif %}
