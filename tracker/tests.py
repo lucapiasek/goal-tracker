@@ -54,14 +54,14 @@ def test_goal_detail_view(client, goal):
 
 @pytest.mark.django_db
 def test_goal_create_view_get(client):
-    url = reverse('tracker:goal-create')
+    url = reverse('tracker:goal_create')
     response = client.get(url)
     assert response.status_code == 200
     assert isinstance(response.context["form"], GoalCreateForm)
 
 @pytest.mark.django_db
 def test_goal_create_view_post(client):
-    url = reverse('tracker:goal-create')
+    url = reverse('tracker:goal_create')
     goal_data = {
         'name': "Koncert"
     }
