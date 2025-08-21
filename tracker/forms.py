@@ -57,6 +57,7 @@ class GoalUpdateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if user is not None:
             self.fields['pieces'].queryset = Piece.objects.filter(user=user)
+            self.fields['pieces'].initial = kwargs['instance'].pieces.all()
 
     def clean(self):
         cleaned_data = super().clean()

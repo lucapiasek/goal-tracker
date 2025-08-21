@@ -21,13 +21,21 @@
     <i>Dodaj godzinę </i>
     {% endif %}
 </h3>
+    <p>Utwory:</p>
+    {% for piece in goal.pieces.all %}
+    <p>{{  piece }}</p>
+    {% empty %}
+    <p><i>Brak utworów</i></p>
+    {% endfor %}
 <label for="is_concluded">
     Cel wypełniony:
-    <checkbox
-            checked="{% if goal.is_concluded %}checked{% endif %}"
+    <input
+            type="checkbox"
+            checked="{% if goal.is_concluded %}checked{% else %}unchecked{% endif %}"
             name="is_concluded"
             id="is_concluded" />
 </label>
+    <p>Dodatkowe informacje:</p>
 <fieldset>
     <p>
         {% if goal.additional_info %}

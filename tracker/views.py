@@ -71,22 +71,26 @@ class GoalUpdateView(View):
         return render(request, 'tracker/create_form.html', {'form': form})
 
     def post (self, request, username, pk):
+        owner = get_object_or_404(UserModel, username=username)
         goal = get_object_or_404(Goal, pk=pk)
-        form = GoalUpdateForm()
+        form = GoalUpdateForm(request.POST, user=owner, instance=goal)
         if form.is_valid():
-            form.save()
-        return redirect('tracker:goal_detail', goal.user.username, goal.pk)
+            goal = form.save()
+            pieces = form.cleaned_data['pieces']
+            goal.pieces.set(pieces)
+            goal.save()
+        return redirect('tracker:goal_detail', username, pk)
 
 class GoalDeleteView(View):
     def get(self, request, username, pk):
         goal = get_object_or_404(Goal, pk=pk)
-        return render(request, 'delete_form.html', {'goal': goal})
+        return render(request, 'tracker/delete_form.html', {'object_to_delete': goal})
 
     def post(self, request, username, pk):
-        if request.POST('operation') == 'Tak':
+        if request.POST.get('operation') == 'Tak':
             goal = get_object_or_404(Goal, pk=pk)
             goal.delete()
-        return redirect('tracker:goal_list')
+        return redirect('tracker:goal_list', username)
 
 class PiecesView(View):
     def get(self, request):
