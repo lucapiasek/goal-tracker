@@ -92,7 +92,23 @@ class GoalDeleteView(View):
             goal.delete()
         return redirect('tracker:goal_list', username)
 
-class PiecesView(View):
-    def get(self, request):
-        queryset = Piece.objects.all()
-        return render(request, 'tracker/pieces.html', {'piece_list': queryset})
+class PieceListView(View):
+    def get(self, request, username):
+        owner = get_object_or_404(UserModel, username=username)
+        queryset = Piece.objects.filter(user=owner)
+        return render(request, 'tracker/piece_list.html', {'piece_list': queryset, 'username': username})
+
+class PieceDetailView(View):
+    def get(self, request, username, pk):
+        piece = get_object_or_404(Piece, pk=pk)
+        return render(request, 'tracker/piece_detail.html', {'piece': piece})
+
+class PieceCreateView(View):
+    def get(self, request, username, pk):
+        pass
+
+class PieceUpdateView(View):
+    pass
+
+class PieceDeleteView(View):
+    pass

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Utwory</h2>
+    <a href="{% url 'tracker:piece_create' username=username %}"><button type="button">Nowy utwór</button></a>
+        <table>
+            <caption>Utwory</caption>
+            {% for piece in piece_list %}
+                <tr>
+
+                {% if piece.name_to_display %}
+                    <td><a href="{% url 'tracker:piece_detail' username=username pk=piece.pk %}">{{ piece.name_to_display }}</td>
+                {% else %}
+
+                    {% if piece.composer %}
+                        <td><a href="{% url 'tracker:piece_detail' username=username pk=piece.pk %}">{{ piece.composer }}</td>
+                    {% endif %}
+
+                    {% if piece.name %}
+                        <td> - <a href="{% url 'tracker:piece_detail' username=username pk=piece.pk %}">{{ piece.name }}</td>
+                    {% endif %}
+
+                {% endif %}
+                    <td> |zaliczony: <input type="checkbox" {% if piece.is_cleared %}checked="checked" {% endif %}/></td>
+                {% if piece.is_mastered %}
+                <td>Utwór opanowany</td>
+                {% endif %}
+                </tr>
+            {% empty %}
+                <td>Tu pojawią się dodane przez Ciebie utwory.</td>
+            {% endfor %}
+        </table>
+{% endblock %}

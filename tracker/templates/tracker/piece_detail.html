@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>
+    {% if piece.name_to_display %}
+    {{ piece.name_to_display }}
+    {% else %}
+    <i>Wpisz nazwę do wyświetlenia</i>
+    {% endif %}
+</h2>
+<h3>
+    Nazwa:
+    {% if piece.name %}
+    {{ piece.name }}
+    {% else %}
+    <i>Wpisz nazwę utworu </i>
+    {% endif %}
+    <p>Kompozytor/zy:
+    {% for composer in piece.composers.all %}
+        {{ piece.composer }},
+    {% empty %}
+    <i>Dodaj kompozytora </i>
+    {% endfor %}</p>
+</h3>
+    <p>Cele:</p>
+    {% for goal in piece.goals.all %}
+    <p>{{ goal }}</p>
+    {% empty %}
+    <p><i>Brak przypisanych celów</i></p>
+    {% endfor %}
+
+    <h3>Dodatkowe informacje:</h3>
+    {% if piece.pieceinformation %}
+        <p>opus: {{ piece.pieceinformation.opus }}</p>
+        <p>nr: {{ piece.pieceinformation.number }}</p>
+        <p>tonacja: {{ piece.pieceinformation.pitch }}</p>
+        <p>gatunki: {% for genre in piece.pieceinformation.genres %}<span>{{ genre }}</span>{% empty %}brak{% endfor %} </p>
+        <p>typy: {% for type in piece.pieceinformation.types %}<span>{{ type }}</span>{% empty %}brak{% endfor %}</p>
+        <p>style: {% for style in piece.pieceinformation.styles %}<span>{{ style }}</span>{% empty %}brak{% endfor %}</p>
+    {% else %}
+        <p>Brak dodatkowych informacji</p>
+    {% endif %}
+    <h3>Zadania</h3>
+    {% for task in piece.tasks %}
+        <p><a>{% if task.parts.all %}{{ task.parts.name }} - {{ task.element }}, {{ task.method }}{%  endif %}</a></p>
+    {% empty %}
+        <p><i>Brak zadań</i></p>
+    {% endfor %}
+<a href="{% url 'tracker:piece_update' piece.user.username piece.pk %}"><button>Edytuj</button></a>
+    <a href="{% url 'tracker:piece_delete' piece.user.username piece.pk %}"><button>Usuń</button></a>
+    <a href="{% url 'tracker:piece_create' piece.user.username %}"><button>Nowy utwór</button></a>
+    <p><a href="{% url 'tracker:piece_list' piece.user.username %}"><button type="button">Wszystkie cele</button></a></p>
+{% endblock %}

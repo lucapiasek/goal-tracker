@@ -74,7 +74,7 @@ def test_pieces_view_with_no_pieces(client):
     url = reverse('tracker:pieces')
     response = client.get(url)
     assert response.status_code == 200
-    assertTemplateUsed(response, 'tracker/pieces.html')
+    assertTemplateUsed(response, 'tracker/piece_list.html')
 
 @pytest.mark.django_db
 def test_pieces_view_with_multiple_pieces(client):
