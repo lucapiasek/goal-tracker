@@ -149,7 +149,7 @@ class DayView(View):
         return render(
             request,
             'tracker_calendar/day_view.html',
-            context={
+            {
                 'date': date,
                 'goal_list': goal_list,
                 'practice_list': practice_list

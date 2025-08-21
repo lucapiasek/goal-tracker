@@ -71,6 +71,17 @@ class GoalUpdateView(View):
         if form.is_valid():
             form.save()
 
+class GoalDeleteView(View):
+    def get(self, request, username, pk):
+        goal = get_object_or_404(Goal, pk=pk)
+        return render(request, 'delete_form.html', {'goal': goal})
+
+    def post(self, request, username, pk):
+        if request.POST('operation') == Tak:
+            goal = get_object_or_404(Goal, pk=pk)
+            goal.delete()
+        return redirect('tracker:goal_list')
+
 class PiecesView(View):
     def get(self, request):
         queryset = Piece.objects.all()
