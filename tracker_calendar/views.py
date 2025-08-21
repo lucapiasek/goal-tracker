@@ -11,7 +11,7 @@ from django.conf import settings
 UserModel = get_user_model()
 
 class MyHTMLCalendar(calendar.LocaleHTMLCalendar):
-    def __init__(self, goals=None, practice=None):
+    def __init__(self, goals=Goal.objects.none(), practice=Practice.objects.none()):
         super().__init__()
         self.goals = goals
         self.practice = practice
@@ -131,7 +131,9 @@ class MyHTMLCalendar(calendar.LocaleHTMLCalendar):
 class YearView(View):
     def get(self, request, username, year):
         owner = get_object_or_404(UserModel, username=username)
-        c = MyHTMLCalendar(goals=Goal.objects.filter(user=owner), practice=Practice.objects.filter(task__user=owner))
+        goals = goals=Goal.objects.filter(user=owner)
+        practice=Practice.objects.filter(task__user=owner) if request.user == owner else Practice.objects.none()
+        c = MyHTMLCalendar(goals=goals, practice=practice)
         html_calendar = c.formatyear(year)
         return render(request, 'tracker_calendar/year_view.html', {'cal': html_calendar})
 
@@ -140,7 +142,10 @@ class DayView(View):
         owner = get_object_or_404(UserModel, username=username)
         date = datetime.date(year=year, month=month, day=day)
         goal_list = Goal.objects.filter(user=owner).filter(date=date)
-        practice_list = Practice.objects.filter(task__user=owner).filter(date=date)
+        if request.user == owner:
+            practice_list = Practice.objects.filter(task__user=owner).filter(date=date)
+        else:
+            practice_list = None
         return render(
             request,
             'tracker_calendar/day_view.html',

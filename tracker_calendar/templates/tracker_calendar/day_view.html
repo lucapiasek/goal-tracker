@@ -6,7 +6,7 @@
     <h2>Cele</h2>
     {%  endif %}
     {% for goal in goal_list %}
-        {{ goal }}
+        <p><a href="{% url 'tracker:goal_detail' goal.user.username goal.pk %}">{{ goal }}</a></p>
     {%  empty %}
     {% endfor %}
 
@@ -14,7 +14,7 @@
     <h2>Ćwiczenie</h2>
     {% endif %}
     {% for practice in practice_list %}
-    {{ practice }}
+    <p><a href="{% url 'tracker:goal_detail' practice.task.user.username practice.pk %}">{{ practice }}</a></p>
     {% empty %}
     {% endfor %}
 
