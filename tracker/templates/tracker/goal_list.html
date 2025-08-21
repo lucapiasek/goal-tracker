@@ -11,7 +11,7 @@
             <td><a href="{% url 'tracker:goal_detail' username=goal.user.username pk=goal.pk %}">{{ goal.date }}</a></td>
         {% endif %}
         {% if goal.time %}
-            <td><a href="{% url 'tracker:goal_detail' username=goal.user.username pk=goal.pk %}">{{ goal.time }}<</a>/td>
+            <td><a href="{% url 'tracker:goal_detail' username=goal.user.username pk=goal.pk %}">{{ goal.time }}<</a></td>
         {% endif %}
         <td><input type="checkbox" {% if goal.is_concluded %}checked="checked" {% endif %}/><td></td>
     </tr>

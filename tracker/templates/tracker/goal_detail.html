@@ -48,4 +48,5 @@
 <a href="{% url 'tracker:goal_update' goal.user.username goal.pk %}"><button>Edytuj</button></a>
     <a href="{% url 'tracker:goal_delete' goal.user.username goal.pk %}"><button>Usuń</button></a>
     <a href="{% url 'tracker:goal_create' goal.user.username %}"><button>Nowy cel</button></a>
+    <p><a href="{% url 'tracker:goal_list' goal.user.username %}"><button type="button">Wszystkie cele</button></a></p>
 {% endblock %}
