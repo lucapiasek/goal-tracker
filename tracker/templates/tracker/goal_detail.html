@@ -37,5 +37,7 @@
         {% endif %}
     </p>
 </fieldset>
-
+<a href="{% url 'tracker:goal_update' goal.user.username goal.pk %}"><button>Edytuj</button></a>
+    <a href="{% url 'tracker:goal_delete' goal.user.username goal.pk %}"><button>Usuń</button></a>
+    <a href="{% url 'tracker:goal_create' goal.user.username goal.pk %}"><button>Nowy cel</button></a>
 {% endblock %}

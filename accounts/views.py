@@ -11,5 +11,5 @@ class UserCreateView(View):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('tracker:goals')
+            return redirect('tracker:goal_list')
         return render(request, 'accounts/create_form.html', {'form': form, 'page_title': "Zarejestruj się"})

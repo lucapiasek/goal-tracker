@@ -77,7 +77,7 @@ class GoalDeleteView(View):
         return render(request, 'delete_form.html', {'goal': goal})
 
     def post(self, request, username, pk):
-        if request.POST('operation') == Tak:
+        if request.POST('operation') == 'Tak':
             goal = get_object_or_404(Goal, pk=pk)
             goal.delete()
         return redirect('tracker:goal_list')

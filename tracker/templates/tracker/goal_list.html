@@ -3,17 +3,25 @@
 <h2>Cele</h2>
 <table>
     <caption>Cele</caption>
+    <a href="{% url 'tracker:goal_detail' goal.user.username goal.pk %}"><button type="button">Nowy cel</button></a>
     {% for goal in goal_list %}
     <tr>
-        <td>{{ goal.name }}</td>
+        <td><a href="{% url 'tracker:goal_detail' goal.user.username goal.pk %}">{{ goal.name }}</a></td>
         {% if goal.date %}
-        <td>{{ goal.date }}</td>
+            <td><a href="{% url 'tracker:goal_detail' goal.user.username goal.pk %}">{{ goal.date }}</a></td>
         {% endif %}
         {% if goal.time %}
-        <td>{{ goal.time }}</td>
+            <td><a href="{% url 'tracker:goal_detail' goal.user.username goal.pk %}">{{ goal.time }}<</a>/td>
         {% endif %}
-        <input type="checkbox" {% if goal.is_concluded %}checked="checked" {% endif %}/>
+        <td><input type="checkbox" {% if goal.is_concluded %}checked="checked" {% endif %}/><td></td>
     </tr>
+        {% if goal.additional_info %}
+            <tr>
+                <td>
+                    <a href="{% url 'tracker:goal_detail' goal.user.username goal.pk %}">{{ goal.additional_info }}</a>
+                </td>
+            </tr>
+        {% endif %}
     {% empty %}
         <td>Tu pojawią się dodane przez Ciebie cele.</td>
     {% endfor %}
