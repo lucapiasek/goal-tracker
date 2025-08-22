@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>
+    {% if goal.name %}
+    {{ goal.name }}
+    {% else %}
+    <i>Wpisz nazwę utworu</i>
+    {% endif %}
+</h2>
+<h3>
+    Data:
+    {% if goal.date %}
+    {{ goal.date }}
+    {% else %}
+    <i>Wpisz datę celu </i>
+    {% endif %}
+    Czas:
+    {% if goal.time %}
+    {{ goal.time }}
+    {% else %}
+    <i>Dodaj godzinę </i>
+    {% endif %}
+</h3>
+    <p>Utwory:</p>
+    {% for piece in goal.pieces.all %}
+    <p>{{  piece }}</p>
+    {% empty %}
+    <p><i>Brak utworów</i></p>
+    {% endfor %}
+<label for="is_concluded">
+    Cel wypełniony:
+    <input
+            type="checkbox"
+            checked="{% if goal.is_concluded %}checked{% else %}unchecked{% endif %}"
+            name="is_concluded"
+            id="is_concluded" />
+</label>
+    <p>Dodatkowe informacje:</p>
+<fieldset>
+    <p>
+        {% if goal.additional_info %}
+        {{ goal.additional_info }}
+        {% else %}
+        <i>Dodatkowe informacje</i>
+        {% endif %}
+    </p>
+</fieldset>
+<a href="{% url 'tracker:goal_update' goal.user.username goal.pk %}"><button>Edytuj</button></a>
+    <a href="{% url 'tracker:goal_delete' goal.user.username goal.pk %}"><button>Usuń</button></a>
+    <a href="{% url 'tracker:goal_create' goal.user.username %}"><button>Nowy cel</button></a>
+    <p><a href="{% url 'tracker:goal_list' goal.user.username %}"><button type="button">Wszystkie cele</button></a></p>
+{% endblock %}

@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Piece, Goal, Composer, Type, Genre, Style, PieceInformation
+from .models import Piece, Goal, Composer, Style, PieceInformation
 
 
 class GoalCreateForm(forms.Form):
