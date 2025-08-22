@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Goal, Piece
-from .forms import GoalCreateForm, GoalUpdateForm
+from .forms import GoalCreateForm, GoalUpdateForm, PieceCreateForm, PieceInformationCreateForm
 from django.views.generic import ListView
 from django.views import View
 from django.contrib.auth import get_user_model
@@ -104,8 +104,27 @@ class PieceDetailView(View):
         return render(request, 'tracker/piece_detail.html', {'piece': piece})
 
 class PieceCreateView(View):
-    def get(self, request, username, pk):
-        pass
+    def get(self, request, username):
+        owner = get_object_or_404(UserModel, username=username)
+        forms = [PieceCreateForm(user=owner), PieceInformationCreateForm()]
+        return render(request, 'tracker/piece_create.html', {'forms': forms})
+
+    def post(self, request, username):
+        owner = get_object_or_404(UserModel, username=username)
+        piece_form = PieceCreateForm(request.POST, user=owner)
+        piece_information_form = PieceInformationCreateForm(request.POST)
+        if piece_form.is_valid():
+            piece = piece_form.save(commit=False)
+            piece.user = owner
+            piece.save()
+            if piece_information_form.is_valid():
+                piece_information = piece_information_form.save(commit=False)
+                piece_information.piece_id = piece.pk
+                piece_information.save()
+            return redirect('tracker:piece_list', username)
+        forms = [piece_form, piece_information_form]
+        return render(request, 'tracker/piece_create.html', {'forms': forms})
+
 
 class PieceUpdateView(View):
     pass
