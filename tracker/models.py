@@ -55,9 +55,6 @@ class PieceInformation(models.Model):
     styles = models.ManyToManyField("Style", blank=True, related_name="pieces_information")
     time_to_master = models.DurationField(blank=True, null=True, help_text="Sugerowany czas opanowania utworu")
 
-    def __str__(self):
-        return self.opus + ' ' + self.number
-
 class Type(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     type = models.CharField(max_length=50)
