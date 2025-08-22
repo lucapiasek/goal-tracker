@@ -16,8 +16,8 @@ class UserCreateView(View):
         return redirect('tracker_calendar:year', user.username, timezone.now().year)
 
 class LoginView(LoginView):
-    template_name = 'accounts/create_form.html',
-    next_page = 'tracker:goals',
+    template_name = 'accounts/create_form.html'
+    next_page = 'tracker_calendar:year'
     extra_context = {'page_title': "Zaloguj się"}
 
 class LogoutView(View):
