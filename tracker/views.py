@@ -117,10 +117,14 @@ class PieceCreateView(View):
             piece = piece_form.save(commit=False)
             piece.user = owner
             piece.save()
+            piece_form.save_m2m()
             if piece_information_form.is_valid():
                 piece_information = piece_information_form.save(commit=False)
                 piece_information.piece_id = piece.pk
                 piece_information.save()
+                piece_information_form.save_m2m()
+                piece.pieceinformation = piece_information
+                piece.save()
             return redirect('tracker:piece_list', username)
         forms = [piece_form, piece_information_form]
         return render(request, 'tracker/piece_create.html', {'forms': forms})
