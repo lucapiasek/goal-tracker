@@ -90,7 +90,7 @@ class PieceCreateForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         name = cleaned_data.get("name")
-        name_to_display = cleaned_data.get("name")
+        name_to_display = cleaned_data.get("name_to_display")
 
         if not name and not name_to_display:
             err = ValidationError("Conajmniej jedno z tych pól musi być wypełnione")
