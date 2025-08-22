@@ -14,7 +14,7 @@ class UserCreateView(View):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('tracker_calendar:year_view', request.user.username, timezone.now().year)
+            return redirect('tracker_calendar:year', request.user.username, timezone.now().year)
         return render(request, 'accounts/create_form.html', {'form': form, 'page_title': "Zarejestruj się"})
 
 class LoginView(LoginView):
@@ -23,6 +23,9 @@ class LoginView(LoginView):
     extra_context = {'page_title': "Zaloguj się"}
 
 class LogoutView(View):
-    def get(self):
+    def get(self, request):
         def get(self):
             return render(request, 'accounts/logout_form.html')
+    def post(self, request):
+        logout(request)
+        return redirect('accounts:login')
