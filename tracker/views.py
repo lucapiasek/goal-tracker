@@ -79,7 +79,8 @@ class GoalUpdateView(View):
             pieces = form.cleaned_data['pieces']
             goal.pieces.set(pieces)
             goal.save()
-        return redirect('tracker:goal_detail', username, pk)
+            return redirect('tracker:goal_detail', username, pk)
+        return render(request, 'tracker/create_form.html', {'form': form})
 
 class GoalDeleteView(View):
     def get(self, request, username, pk):
