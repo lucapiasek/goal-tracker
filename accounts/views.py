@@ -22,8 +22,7 @@ class LoginView(LoginView):
 
 class LogoutView(View):
     def get(self, request):
-        def get(self):
-            return render(request, 'accounts/logout_form.html')
+        return render(request, 'accounts/logout_form.html')
     def post(self, request):
         logout(request)
         return redirect('accounts:login')
