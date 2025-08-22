@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Goal, Piece
+from .models import Goal, Piece, PieceInformation
 from .forms import GoalCreateForm, GoalUpdateForm, PieceCreateForm, PieceInformationCreateForm
 from django.views.generic import ListView
 from django.views import View
@@ -14,6 +14,7 @@ def is_owner(user, owner):
 def is_teacher(user, owner):
     if user.teacher.is_teacher:
         return user.teacher.students.all().contains(owner)
+    return False
 
 class GoalListView(ListView):
     template_name = "tracker/goal_list.html"
@@ -132,7 +133,43 @@ class PieceCreateView(View):
 
 
 class PieceUpdateView(View):
-    pass
+    def get(self, request, username, pk):
+        owner = get_object_or_404(UserModel, username=username)
+        piece = get_object_or_404(Piece, pk=pk)
+        piece_form = PieceCreateForm(instance=piece, user=owner)
+        try:
+            piece_information = PieceInformation.objects.get(piece=piece)
+            piece_information_form = PieceInformationCreateForm(instance=piece_information, user=owner)
+        except PieceInformation.DoesNotExist:
+            piece_information_form = PieceInformationCreateForm(user=owner)
+
+        forms = [piece_form, piece_information_form]
+        return render(request, 'tracker/piece_create.html', {'forms': forms})
+
+    def post(self, request, username, pk):
+        owner = get_object_or_404(UserModel, username=username)
+        piece = get_object_or_404(Piece, pk=pk)
+        piece_form = PieceCreateForm(request.POST, instance=piece, user=owner)
+        try:
+            piece_information = PieceInformation.objects.get(piece=piece)
+            piece_information_form = PieceInformationCreateForm(request.POST, instance=piece_information, user=owner)
+        except PieceInformation.DoesNotExist:
+            piece_information_form = PieceInformationCreateForm(request.POST, user=owner)
+
+        if piece_form.is_valid():
+            piece = piece_form.save(commit=False)
+            piece.save()
+            piece_form.save_m2m()
+            if piece_information_form.is_valid():
+                piece_information = piece_information_form.save(commit=False)
+                piece_information.piece_id = piece.pk
+                piece_information.save()
+                piece_information_form.save_m2m()
+                piece.pieceinformation = piece_information
+                piece.save()
+            return redirect('tracker:piece_detail', username, piece.pk)
+        forms = [piece_form, piece_information_form]
+        return render(request, 'tracker/piece_create.html', {'forms': forms})
 
 class PieceDeleteView(View):
     def get(self, request, username, pk):
