@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Piece, Goal, Composer, Type, Genre, Style
+from .models import Piece, Goal, Composer, Type, Genre, Style, PieceInformation
 
 date_input_formats = [
         "%d.%m.%Y",
@@ -71,35 +71,48 @@ class GoalUpdateForm(forms.ModelForm):
             self.add_error("pieces", err)
             self.add_error("additional_info", err)
 
-class PieceCreateForm(forms.Form):
-    name = forms.CharField(max_length=200, required=False, empty_value='', label='Nazwa')
-    composers = forms.ModelMultipleChoiceField(queryset=Composer.objects.none(), required=False, label="Kompozytorzy")
-    goals = forms.ModelMultipleChoiceField(queryset=Goal.objects.none(), required=False, label="Cele")
-    name_to_display = forms.CharField(label="Nazwa do wyświetlania", max_length=200, required=False, empty_value='')
-    is_mastered = forms.NullBooleanField(label="Opanowany")
-    is_cleared = forms.NullBooleanField(label="Zaliczony")
-    is_archived = forms.NullBooleanField(label="Zarchiwizuj")
-    opus = forms.CharField(max_length=30, required=False, empty_value='')
-    number = forms.CharField(label='Numer', max_length=30, required=False, empty_value='')
-    pitch = forms.CharField(label='Tonacja', max_length=30, required=False, empty_value='')
-    type = forms.ModelMultipleChoiceField(queryset=Type.objects.none(), label='Typ', required=False)
-    genre  = forms.ModelMultipleChoiceField(queryset=Genre.objects.none(), label='Gatunki', required=False)
-    style  = forms.ModelMultipleChoiceField(queryset=Style.objects.none(), label='Style/Epoki', required=False)
+class PieceCreateForm(forms.ModelForm):
+    class Meta:
+        model = Piece
+        use_required_attribute = False
+        fields = ('name', 'composers', 'name_to_display', 'goals', 'is_mastered', 'is_archived', 'is_cleared')
+        widgets = {
+            "composers": forms.CheckboxSelectMultiple(),
+            "goals": forms.CheckboxSelectMultiple()
+        }
 
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
+    def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user is not None:
-            self.fields['pieces'].queryset = Piece.objects.filter(user=user)
+            self.user = user
+            self.fields['composers'].queryset = Composer.objects.filter(user=user)
+            self.fields['goals'].queryset = Goal.objects.filter(user=user)
 
     def clean(self):
         cleaned_data = super().clean()
         name = cleaned_data.get("name")
         name_to_display = cleaned_data.get("name")
-        pieces = cleaned_data.get("pieces")
-        additional_info = cleaned_data.get("additional_info")
 
         if not name and not name_to_display:
             err = ValidationError("Conajmniej jedno z tych pól musi być wypełnione")
             self.add_error("name", err)
             self.add_error('name_to_display', err)
+
+class PieceInformationCreateForm(forms.ModelForm):
+    class Meta:
+        model = PieceInformation
+        user_required_attribute = False
+        fields = ('opus', 'number', 'pitch', 'types', 'genres', 'styles')
+        widgets = {
+            "types": forms.CheckboxSelectMultiple(),
+            "genres": forms.CheckboxSelectMultiple(),
+            "styles": forms.CheckboxSelectMultiple()
+        }
+
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user is not None:
+            self.user = user
+            self.fields['types'].queryset = Composer.objects.filter(user=user)
+            self.fields['genres'].queryset = Genre.objects.filter(user=user)
+            self.fields['styles'].queryset = Style.objects.filter(user=user)
