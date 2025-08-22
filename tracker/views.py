@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Goal, Piece, PieceInformation
+from .models import Goal, Piece, PieceInformation, Style
 from .forms import GoalCreateForm, GoalUpdateForm, PieceCreateForm, PieceInformationCreateForm
 from django.views.generic import ListView
 from django.views import View
 from django.contrib.auth import get_user_model
+from django.forms import modelform_factory
 import datetime
 
 UserModel = get_user_model()
@@ -181,3 +182,65 @@ class PieceDeleteView(View):
             goal = get_object_or_404(Piece, pk=pk)
             goal.delete()
         return redirect('tracker:piece_list', username)
+
+class StyleListView(ListView):
+    template_name = "tracker/basic_list.html"
+    model = Style
+    context_object_name = "object_list"
+
+    def get_queryset(self):
+        owner = get_object_or_404(UserModel, username=self.kwargs['username'])
+        return Style.objects.filter(user=owner)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['owner_username'] = self.kwargs['username']
+        context['model_name'] = {
+            'singular': 'styl',
+            'plural': 'style'
+        }
+        context['links'] = {
+            'create': 'tracker:style_create',
+            'update': 'tracker:style_update'
+        }
+        return context
+
+
+class StyleCreateView(View):
+    def __init__(self):
+        super().__init__()
+        self.StyleForm = modelform_factory(Style, fields=["style"], labels={"style": "Styl"})
+
+    def get(self, request, username):
+        return render(request, 'tracker/create_form.html', {'form': self.StyleForm})
+
+    def post(self, request, username):
+        owner = get_object_or_404(UserModel, username=username)
+        form = self.StyleForm(request.POST)
+        style = form.save(commit=False)
+        style.user = owner
+        form.save()
+        return redirect('tracker:style_list', username)
+
+
+class StyleUpdateView(View):
+    def get(self, request, username, pk):
+        style = get_object_or_404(Style, pk=pk)
+        StyleForm = modelform_factory(Style, fields=["style"], labels={"style": "Styl"})
+        form = StyleForm(instance=style)
+        return render(request, 'tracker/create_form.html', {'form': form})
+
+    def post(self, request, username, pk):
+        owner = get_object_or_404(UserModel, username=username)
+        style = get_object_or_404(Style, pk=pk)
+        StyleForm = modelform_factory(Style, fields=["style"], labels={"style": "Styl"})
+        form = StyleForm(request.POST, instance=style)
+        style = form.save(commit=False)
+        style.user = owner
+        form.save()
+        return redirect('tracker:style_list', username)
+
+class StyleDeleteView(View):
+    def get(self, request, username, pk):
+        style = get_object_or_404(Style, pk=pk)
+        return render(request, 'tracker/delete_form.html', {'object_to_delete': style})

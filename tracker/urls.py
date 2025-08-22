@@ -13,4 +13,8 @@ urlpatterns = [
     path('<str:username>/pieces/new', views.PieceCreateView.as_view(), name='piece_create'),
     path('<str:username>/pieces/<int:pk>/update', views.PieceUpdateView.as_view(), name='piece_update'),
     path('<str:username>/pieces/<int:pk>/delete', views.PieceDeleteView.as_view(), name='piece_delete'),
+    path('<str:username>/styles/', views.StyleListView.as_view(), name='style_list'),
+    path('<str:username>/styles/new', views.StyleCreateView.as_view(), name='style_create'),
+    path('<str:username>/styles/<int:pk>/update', views.StyleUpdateView.as_view(), name='style_update'),
+    path('<str:username>/styles/<int:pk>/delete', views.StyleDeleteView.as_view(), name='style_delete'),
 ]

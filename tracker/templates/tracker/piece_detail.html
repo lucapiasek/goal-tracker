@@ -35,7 +35,7 @@
         <p>tonacja: {{ piece.piece_information.pitch }}</p>
         <p>gatunki: {% for genre in piece.piece_information.genres.all %}<span>{{ genre }}</span>{% empty %}brak{% endfor %} </p>
         <p>typy: {% for type in piece.piece_information.types.all %}<span>{{ type }}</span>{% empty %}brak{% endfor %}</p>
-        <p>style: {% for style in piece.piece_information.styles.all %}<span>{{ style }}</span>{% empty %}brak{% endfor %}</p>
+        <p>style: {% for style in piece.piece_information.styles.all %}<span>{{ style }} </span>{% empty %}brak{% endfor %}</p>
     {% else %}
         <p>Brak dodatkowych informacji</p>
     {% endif %}

@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.shortcuts import reverse
 
 class Goal(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -72,6 +73,9 @@ class Genre(models.Model):
 class Style(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     style = models.CharField(max_length=30, default='')
+
+    def get_absolute_url(self):
+        return reverse('tracker:style_update', args=[self.user.username, self.pk])
 
     def __str__(self):
         return self.style
