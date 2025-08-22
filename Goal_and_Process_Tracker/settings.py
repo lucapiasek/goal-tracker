@@ -111,6 +111,19 @@ LANGUAGE_CODE = 'pl'
 
 TIME_ZONE = 'Europe/Warsaw'
 
+DATE_INPUT_FORMATS = [
+        "%d.%m.%Y",
+        "%d.%m.%y",
+        "%d/%m/%Y",
+        "%d/%m/%y",
+        "%d-%m-%Y",
+        "%d-%m-%y",
+        "%d %m %Y",
+        "%d %m %y",
+        "%Y/%m/%d",
+        "%Y.%m.%d"
+    ]
+
 USE_I18N = True
 
 USE_TZ = True

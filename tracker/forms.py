@@ -2,24 +2,12 @@ from django import forms
 from django.core.exceptions import ValidationError
 from .models import Piece, Goal, Composer, Type, Genre, Style, PieceInformation
 
-date_input_formats = [
-        "%d.%m.%Y",
-        "%d.%m.%y",
-        "%d/%m/%Y",
-        "%d/%m/%y",
-        "%d-%m-%Y",
-        "%d-%m-%y",
-        "%d %m %Y",
-        "%d %m %y",
-        "%Y/%m/%d",
-        "%Y.%m.%d"
-    ]
 
 class GoalCreateForm(forms.Form):
     name = forms.CharField(max_length=200, label='Cel', required=False, empty_value='')
     piece = forms.CharField(max_length=200, label='Utwór', required=False, empty_value='')
     pieces = forms.ModelMultipleChoiceField(queryset=Piece.objects.none(), label="Utwory", required=False, widget=forms.CheckboxSelectMultiple)
-    date = forms.DateField(required=False, label='Data', input_formats=date_input_formats)
+    date = forms.DateField(required=False, label='Data')
     time = forms.TimeField(label="Godz.", required=False)
     additional_info = forms.CharField(label="Dodatkowe informacje", required=False, )
 
