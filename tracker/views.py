@@ -134,4 +134,12 @@ class PieceUpdateView(View):
     pass
 
 class PieceDeleteView(View):
-    pass
+    def get(self, request, username, pk):
+        piece = get_object_or_404(Piece, pk=pk)
+        return render(request, 'tracker/delete_form.html', {'object_to_delete': piece})
+
+    def post(self, request, username, pk):
+        if request.POST.get('operation') == 'Tak':
+            goal = get_object_or_404(Piece, pk=pk)
+            goal.delete()
+        return redirect('tracker:piece_list', username)
