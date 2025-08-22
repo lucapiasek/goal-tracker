@@ -46,33 +46,35 @@ class Collection(models.Model):
         return self.name
 
 class PieceInformation(models.Model):
-    piece = models.OneToOneField("Piece", on_delete=models.CASCADE)
+    piece = models.OneToOneField("Piece", on_delete=models.CASCADE, related_name="piece_information")
     opus = models.CharField(max_length=30, blank=True, default='')
     number = models.CharField(max_length=30, blank=True, default='')
     pitch = models.CharField(max_length=30, blank=True, default='')
-    type = models.CharField(max_length=70, blank=True, default='')
+    types = models.ManyToManyField("Type", blank=True, related_name="pieces_information")
+    genres = models.ManyToManyField("Genre", blank=True, related_name="pieces_information")
+    styles = models.ManyToManyField("Style", blank=True, related_name="pieces_information")
     time_to_master = models.DurationField(blank=True, null=True, help_text="Sugerowany czas opanowania utworu")
 
     def __str__(self):
         return self.opus + ' ' + self.number
 
 class Type(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     type = models.CharField(max_length=50)
-    pieces = models.ManyToManyField("PieceInformation", blank=True, related_name="types")
 
     def __str__(self):
         return self.type
 
 class Genre(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     genre = models.CharField(max_length=50, default='')
-    pieces = models.ManyToManyField("PieceInformation", blank=True, related_name="genres")
 
     def __str__(self):
         return self.genre
 
 class Style(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     style = models.CharField(max_length=30, default='')
-    pieces = models.ManyToManyField("PieceInformation", blank=True, related_name="styles")
 
     def __str__(self):
         return self.style
