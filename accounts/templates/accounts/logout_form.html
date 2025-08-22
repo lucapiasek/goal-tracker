@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    Czy chcesz się wylogować?
+    <form method="POST">
+        {% csrf_token %}
+        <p><input type="submit" name="operation" value="Tak" /></p>
+        <p><input type="submit" name="operation" value="Nie" /></p>
+    </form>
+{% endblock %}

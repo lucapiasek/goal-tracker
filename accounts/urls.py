@@ -1,14 +1,11 @@
 from django.urls import path
 from . import views
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView
 
 app_name = 'accounts'
 
 urlpatterns = [
-    path('user/create/', views.UserCreateView.as_view(), name='create'),
-    path('user/login', LoginView.as_view(
-        template_name='accounts/create_form.html',
-        next_page='tracker:goals',
-        extra_context={'page_title': "Zaloguj się"}
-    ), name='login'),
+    path('user/new/', views.UserCreateView.as_view(), name='create'),
+    path('user/login', views.LoginView.as_view(), name='login'),
+    path('user/logout', views.LogoutView.as_view(), name='logout')
 ]
