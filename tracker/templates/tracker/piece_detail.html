@@ -29,13 +29,13 @@
     {% endfor %}
 
     <h3>Dodatkowe informacje:</h3>
-    {% if piece.pieceinformation %}
-        <p>opus: {{ piece.pieceinformation.opus }}</p>
-        <p>nr: {{ piece.pieceinformation.number }}</p>
-        <p>tonacja: {{ piece.pieceinformation.pitch }}</p>
-        <p>gatunki: {% for genre in piece.pieceinformation.genres %}<span>{{ genre }}</span>{% empty %}brak{% endfor %} </p>
-        <p>typy: {% for type in piece.pieceinformation.types %}<span>{{ type }}</span>{% empty %}brak{% endfor %}</p>
-        <p>style: {% for style in piece.pieceinformation.styles %}<span>{{ style }}</span>{% empty %}brak{% endfor %}</p>
+    {% if piece.piece_information %}
+        <p>opus: {{ piece.piece_information.opus }}</p>
+        <p>nr: {{ piece.piece_information.number }}</p>
+        <p>tonacja: {{ piece.piece_information.pitch }}</p>
+        <p>gatunki: {% for genre in piece.piece_information.genres.all %}<span>{{ genre }}</span>{% empty %}brak{% endfor %} </p>
+        <p>typy: {% for type in piece.piece_information.types.all %}<span>{{ type }}</span>{% empty %}brak{% endfor %}</p>
+        <p>style: {% for style in piece.piece_information.styles.all %}<span>{{ style }}</span>{% empty %}brak{% endfor %}</p>
     {% else %}
         <p>Brak dodatkowych informacji</p>
     {% endif %}
@@ -48,5 +48,5 @@
 <a href="{% url 'tracker:piece_update' piece.user.username piece.pk %}"><button>Edytuj</button></a>
     <a href="{% url 'tracker:piece_delete' piece.user.username piece.pk %}"><button>Usuń</button></a>
     <a href="{% url 'tracker:piece_create' piece.user.username %}"><button>Nowy utwór</button></a>
-    <p><a href="{% url 'tracker:piece_list' piece.user.username %}"><button type="button">Wszystkie cele</button></a></p>
+    <p><a href="{% url 'tracker:piece_list' piece.user.username %}"><button type="button">Wszystkie utwory</button></a></p>
 {% endblock %}
