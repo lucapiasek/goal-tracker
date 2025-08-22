@@ -84,7 +84,6 @@ class PieceCreateForm(forms.ModelForm):
     def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user is not None:
-            self.user = user
             self.fields['composers'].queryset = Composer.objects.filter(user=user)
             self.fields['goals'].queryset = Goal.objects.filter(user=user)
 
@@ -102,17 +101,12 @@ class PieceInformationCreateForm(forms.ModelForm):
     class Meta:
         model = PieceInformation
         user_required_attribute = False
-        fields = ('opus', 'number', 'pitch', 'types', 'genres', 'styles')
+        fields = ('opus', 'number', 'pitch', 'styles')
         widgets = {
-            "types": forms.CheckboxSelectMultiple(),
-            "genres": forms.CheckboxSelectMultiple(),
             "styles": forms.CheckboxSelectMultiple()
         }
 
     def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user is not None:
-            self.user = user
-            self.fields['types'].queryset = Composer.objects.filter(user=user)
-            self.fields['genres'].queryset = Genre.objects.filter(user=user)
             self.fields['styles'].queryset = Style.objects.filter(user=user)
