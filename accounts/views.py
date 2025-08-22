@@ -12,10 +12,8 @@ class UserCreateView(View):
 
     def post(self, request):
         form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('tracker_calendar:year', request.user.username, timezone.now().year)
-        return render(request, 'accounts/create_form.html', {'form': form, 'page_title': "Zarejestruj się"})
+        user = form.save()
+        return redirect('tracker_calendar:year', user.username, timezone.now().year)
 
 class LoginView(LoginView):
     template_name = 'accounts/create_form.html',
