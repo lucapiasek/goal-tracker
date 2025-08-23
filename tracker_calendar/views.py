@@ -135,7 +135,7 @@ class YearView(View):
         practice=Practice.objects.filter(task__user=owner) if request.user == owner else Practice.objects.none()
         c = MyHTMLCalendar(goals=goals, practice=practice)
         html_calendar = c.formatyear(year)
-        return render(request, 'tracker_calendar/year_view.html', {'cal': html_calendar})
+        return render(request, 'tracker_calendar/year_view.html', {'cal': html_calendar, 'owner': owner})
 
 class DayView(View):
     def get(self, request, username, year, month, day):
@@ -152,6 +152,7 @@ class DayView(View):
             {
                 'date': date,
                 'goal_list': goal_list,
-                'practice_list': practice_list
+                'practice_list': practice_list,
+                'owner': owner
             })
 
