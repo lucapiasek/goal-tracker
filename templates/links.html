@@ -1,11 +1,15 @@
 {% now "Y" as current_year %}
-{% if user != owner %}<h3>Cele ucznia {{ owner.username }}</h3>{% endif %}
+{% if owner %}
+    {% if user != owner %}<h3>Cele ucznia {{ owner.username }}</h3>{% endif %}
 
-<a href="{% url 'tracker_calendar:year' owner.username current_year %}">Kalendarz</a>
-<a href="{% url 'tracker:goal_list' username=owner.username %}">Cele</a>
-<a href="{% url 'tracker:piece_list' username=owner.username %}">Utwory</a>
+    <a href="{% url 'tracker_calendar:year' owner.username current_year %}">Kalendarz</a>
+<a href="{% url 'tracker:goal_list' owner.username %}">Cele</a>
+<a href="{% url 'tracker:piece_list' owner.username %}">Utwory</a>
 {% if user.teacher.is_teacher %}
-    <a href="{% url 'accounts:user_detail' username=owner.username %}">Studenci</a>
+    <a href="{% url 'accounts:user_detail' owner.username %}">Studenci</a>
 {% endif %}
 <a href="{% url 'accounts:user_detail' user.username %}">Mój profil </a>
 <a href="{% url 'accounts:logout' %}">Wyloguj</a>
+
+
+{% endif %}
