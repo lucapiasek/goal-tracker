@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    Czy chcesz usunąć {{ object_to_delete }}
+    <form method="POST">
+        {% csrf_token %}
+        <input type="submit" name="operation" value="Tak" />
+        <input type="submit" name="operation" value="Nie" />
+    </form>
+{% endblock %}
