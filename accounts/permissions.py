@@ -18,6 +18,5 @@ def is_teacher(request, username):
         return False
     return False
 
-
 def is_owner_or_is_teacher(request, username):
-    return is_owner or is_teacher
+    return is_owner(request, username) or is_teacher(request, username)
