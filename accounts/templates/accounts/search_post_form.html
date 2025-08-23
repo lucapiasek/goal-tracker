@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ page_title }}</h1>
+<form method="POST">
+    {% csrf_token %}
+    <p><label for="search">Wpisz username osoby, do której ma zostać wysłane zaproszenie:</label></p>
+    {% if form_err %}{{ form_err }}{% endif %}
+    <p><input type="text" required id="search" name="searched" /></p>
+    <input type="submit" value={{ button_value }} />
+</form>
+{% endblock %}

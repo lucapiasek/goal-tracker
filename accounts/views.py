@@ -3,13 +3,14 @@ from django.views import View
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.contrib.auth.decorators import login_not_required, login_required
+from django.contrib.auth.decorators import login_not_required
 from django.contrib.auth import get_user_model, logout, get_user
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from .models import Teacher, Student
 from django.forms import modelform_factory
 from .permissions import is_owner_or_is_teacher
+from .utils import if_not_teacher_create, if_not_student_create
 
 UserModel = get_user_model()
 
@@ -83,3 +84,43 @@ class UserUpdateView(View):
         form = UserForm(request.POST, instance=owner)
         user = form.save()
         return redirect('accounts:user_detail', user.username)
+
+class StudentInviteView(View):
+    def get(self, request):
+        return render(request, 'accounts/search_post_form.html', {
+            'page_title': 'Zaproś nauczyciela',
+            'button_value': 'Zaproś',
+            'owner': request.user
+        })
+
+    def post(self, request):
+        invited = request.POST['searched']
+        user = get_user(request)
+
+        try:
+            invited_user = UserModel.objects.get(username=invited)
+            if_not_teacher_create(invited_user)
+            if_not_student_create(user)
+            if invited_user.teacher.students.all().contains(user.student):
+                success_message = "Nauczyciel już jest zaproszony."
+
+            else:
+                already_invited = user.student.teacher_invitations.all()
+                already_invited.teacher_invitations.add(invited_user.teacher)
+                success_message = "Wysłano zaproszenie do %s." % invited
+
+            return render(request, 'accounts/success.html', {
+                'page_title': 'Zaproś nauczyciela',
+                'success_message': success_message,
+                'owner': user
+            })
+
+        except UserModel.DoesNotExist:
+            return render(request, 'accounts/search_post_form.html', {
+            'page_title': 'Zaproś nauczyciela',
+            'button_value': 'Zaproś',
+            'owner': user,
+            'form_err': 'Nie ma użytkownika o podanym username'
+        })
+
+
