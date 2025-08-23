@@ -46,7 +46,7 @@ class LogoutView(View):
 
 class UserDetailView(UserPassesTestMixin, View):
     def test_func(self):
-        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request, self.kwargs['username'])
 
     def get(self, request, username):
         owner = get_object_or_404(UserModel, username=username)
