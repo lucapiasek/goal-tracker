@@ -121,7 +121,8 @@ DATE_INPUT_FORMATS = [
         "%d %m %Y",
         "%d %m %y",
         "%Y/%m/%d",
-        "%Y.%m.%d"
+        "%Y.%m.%d",
+        "%Y-%m-%d"
     ]
 
 USE_I18N = True

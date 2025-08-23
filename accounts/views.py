@@ -2,16 +2,18 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
-from django.contrib.auth import get_user_model, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import get_user_model, logout, get_user
 from django.utils import timezone
 from .models import Teacher, Student
+from django.forms import modelform_factory
 
 UserModel = get_user_model()
 
 class UserCreateView(View):
     def get(self, request):
         form = UserCreationForm()
-        return render(request, 'accounts/create_form.html', {'form': form, 'page_title': "Zarejestruj się"})
+        return render(request, 'accounts/create_user.html', {'form': form, 'page_title': "Zarejestruj się"})
 
     def post(self, request):
         form = UserCreationForm(request.POST)
@@ -19,8 +21,8 @@ class UserCreateView(View):
         return redirect('tracker_calendar:year', user.username, timezone.now().year)
 
 class LoginView(LoginView):
-    template_name = 'accounts/create_form.html'
-    next_page = 'tracker_calendar:year'
+    template_name = 'accounts/create_user.html'
+    next_page = 'accounts:user_update'
     extra_context = {'page_title': "Zaloguj się"}
 
 class LogoutView(View):
@@ -47,3 +49,25 @@ class UserDetailView(View):
             owner.save()
         owner = UserModel.objects.select_related('student').get(id=owner.id)
         return render(request, 'accounts/user_detail.html', {'owner': owner})
+
+class UserUpdateView(LoginRequiredMixin, View):
+    def get(self, request):
+        owner = get_user(request)
+        UserForm = modelform_factory(
+            UserModel,
+            fields=['first_name', 'last_name', 'email'],
+            labels={'first_name': 'Imię', 'last_name': 'Nazwisko'}
+        )
+        form = UserForm(instance=request.user)
+        return render(request, 'accounts/create_form.html', {'form': form, 'owner': owner})
+
+    def post(self, request):
+        owner = get_user(request)
+        UserForm = modelform_factory(
+            UserModel,
+            fields=['first_name', 'last_name', 'email'],
+            labels={'first_name': 'Imię', 'last_name': 'Nazwisko'}
+            )
+        form = UserForm(request.POST, instance=request.user)
+        user = form.save()
+        return redirect('accounts:user_detail', owner.username)

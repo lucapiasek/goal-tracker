@@ -15,11 +15,13 @@
 </h2>
 <h3>
     {{ owner.username }}
-    <br />
-    {% if user == owner %}
-        {% if owner.email %}{{ owner.email }}{% else %}<i>Dodaj adres e-mail, aby otrzymywać powiadomienia</i>{% endif %}
+    <br /><br />
+    {% if user.id == owner.pk %}
+        E-mail: {% if owner.email %}{{ owner.email }}{% else %}<i>Dodaj adres e-mail, aby otrzymywać powiadomienia</i>{% endif %}
     {% endif %}
+
 </h3>
+    {% if user.id == owner.pk %}<a href="{% url 'accounts:user_update' %}"><button type="button">Zmień informacje</button></a>{% endif %}
 
     {% if owner.teacher.is_teacher %}
     <h2>Studenci:</h2>
@@ -31,7 +33,7 @@
     {% endif %}
 
     <h2>Nauczyciele:</h2>
-    {% for teacher in owner.student.teachers %}
+    {% for teacher in owner.student.teachers.all %}
         <p><a>{{ teacher.user.last_name }} {{ teacher.user.last_name }} | {{ teacher.user.username }}</a></p>
     {% empty %}
     <p><i>Dodaj nauczycieli</i></p>
