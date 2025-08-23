@@ -3,16 +3,17 @@ from django.views import View
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.contrib.auth.decorators import login_not_required
+from django.contrib.auth.decorators import login_not_required, login_required
 from django.contrib.auth import get_user_model, logout, get_user
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from .models import Teacher, Student
 from django.forms import modelform_factory
 from .permissions import is_owner_or_is_teacher
 
 UserModel = get_user_model()
 
-@login_not_required()
+@method_decorator(login_not_required, name='dispatch')
 class UserCreateView(View):
     def get(self, request):
         form = UserCreationForm()
@@ -23,9 +24,8 @@ class UserCreateView(View):
         user = form.save()
         return redirect('tracker_calendar:year', user.username, timezone.now().year)
 
-@login_not_required()
-class LoginView(UserPassesTestMixin, LoginView):
-    template_name = 'accounts/create_user.html'
+class LoginView(LoginView):
+    template_name = 'accounts/login_form.html'
     next_page = 'accounts:user_update'
     extra_context = {'page_title': "Zaloguj się"}
     redirect_authenticated_user = True
