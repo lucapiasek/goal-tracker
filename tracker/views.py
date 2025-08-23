@@ -4,22 +4,19 @@ from .forms import GoalCreateForm, GoalUpdateForm, PieceCreateForm, PieceInforma
 from django.views.generic import ListView
 from django.views import View
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import UserPassesTestMixin
+from accounts.permissions import is_owner_or_is_teacher
 from django.forms import modelform_factory
 import datetime
 
 UserModel = get_user_model()
 
-def is_owner(user, owner):
-    return user.id == owner.id
-
-def is_teacher(user, owner):
-    if user.teacher.is_teacher:
-        return user.teacher.students.all().contains(owner)
-    return False
-
-class GoalListView(ListView):
+class GoalListView(UserPassesTestMixin, ListView):
     template_name = "tracker/goal_list.html"
     model = Goal
+
+    def test_func(self):
+        is_owner_or_is_teacher(self.request, self.kwargs['username'])
 
     def get_queryset(self):
         owner = get_object_or_404(UserModel, username=self.kwargs['username'])
@@ -30,13 +27,19 @@ class GoalListView(ListView):
         context['owner'] = get_object_or_404(UserModel, username=self.kwargs['username'])
         return context
 
-class GoalDetailView(View):
+class GoalDetailView(UserPassesTestMixin, View):
+    def test_func(self):
+        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+
     def get(self, request, username, pk):
         owner = UserModel.objects.get(username=username)
         goal = get_object_or_404(Goal, pk=pk)
         return render(request, 'tracker/goal_detail.html', {'goal': goal, 'owner': owner})
 
-class GoalCreateView(View):
+class GoalCreateView(UserPassesTestMixin, View):
+    def test_func(self):
+        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+
     def get(self, request, username):
         owner = UserModel.objects.get(username=username)
         date = request.session.get('last_visited_date', None)
@@ -66,7 +69,10 @@ class GoalCreateView(View):
             return redirect('tracker:goal_list')
         return render(request, 'tracker/create_form.html', {'form': form, 'page_title': 'Dodaj cel', 'owner': owner})
 
-class GoalUpdateView(View):
+class GoalUpdateView(UserPassesTestMixin, View):
+    def test_func(self):
+        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+
     def get(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
         goal = get_object_or_404(Goal, pk=pk)
@@ -85,7 +91,10 @@ class GoalUpdateView(View):
             return redirect('tracker:goal_detail', username, pk)
         return render(request, 'tracker/create_form.html', {'form': form, 'page_title': 'Zaktualizuj cel', 'owner': owner})
 
-class GoalDeleteView(View):
+class GoalDeleteView(UserPassesTestMixin, View):
+    def test_func(self):
+        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+
     def get(self, request, username, pk):
         owner = get_object_or_404(username=username)
         goal = get_object_or_404(Goal, pk=pk)
@@ -97,19 +106,28 @@ class GoalDeleteView(View):
             goal.delete()
         return redirect('tracker:goal_list', username)
 
-class PieceListView(View):
+class PieceListView(UserPassesTestMixin, View):
+    def test_func(self):
+        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+
     def get(self, request, username):
         owner = get_object_or_404(UserModel, username=username)
         queryset = Piece.objects.filter(user=owner)
         return render(request, 'tracker/piece_list.html', {'piece_list': queryset, 'username': username})
 
-class PieceDetailView(View):
+class PieceDetailView(UserPassesTestMixin, View):
+    def test_func(self):
+        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+
     def get(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
         piece = get_object_or_404(Piece, pk=pk)
         return render(request, 'tracker/piece_detail.html', {'piece': piece, 'owner': owner})
 
-class PieceCreateView(View):
+class PieceCreateView(UserPassesTestMixin, View):
+    def test_func(self):
+        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+
     def get(self, request, username):
         owner = get_object_or_404(UserModel, username=username)
         forms = [PieceCreateForm(user=owner), PieceInformationCreateForm()]
@@ -136,7 +154,10 @@ class PieceCreateView(View):
         return render(request, 'tracker/piece_create.html', {'forms': forms,  'owner': owner})
 
 
-class PieceUpdateView(View):
+class PieceUpdateView(UserPassesTestMixin, View):
+    def test_func(self):
+        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+
     def get(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
         piece = get_object_or_404(Piece, pk=pk)
@@ -175,7 +196,10 @@ class PieceUpdateView(View):
         forms = [piece_form, piece_information_form]
         return render(request, 'tracker/piece_create.html', {'forms': forms, 'owner': owner})
 
-class PieceDeleteView(View):
+class PieceDeleteView(UserPassesTestMixin, View):
+    def test_func(self):
+        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+
     def get(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
         piece = get_object_or_404(Piece, pk=pk)
@@ -187,10 +211,13 @@ class PieceDeleteView(View):
             goal.delete()
         return redirect('tracker:piece_list', username)
 
-class StyleListView(ListView):
+class StyleListView(UserPassesTestMixin, ListView):
     template_name = "tracker/basic_list.html"
     model = Style
     context_object_name = "object_list"
+
+    def test_func(self):
+        is_owner_or_is_teacher(self.request, self.kwargs['username'])
 
     def get_queryset(self):
         owner = get_object_or_404(UserModel, username=self.kwargs['username'])
@@ -210,7 +237,10 @@ class StyleListView(ListView):
         return context
 
 
-class StyleCreateView(View):
+class StyleCreateView(UserPassesTestMixin, View):
+    def test_func(self):
+        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+
     def get(self, request, username):
         owner = get_object_or_404(UserModel, username=username)
         StyleForm = modelform_factory(Style, fields=["style"], labels={"style": "Styl"})
@@ -226,7 +256,10 @@ class StyleCreateView(View):
         return redirect('tracker:style_list', username)
 
 
-class StyleUpdateView(View):
+class StyleUpdateView(UserPassesTestMixin, View):
+    def test_func(self):
+        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+
     def get(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
         style = get_object_or_404(Style, pk=pk)
@@ -244,7 +277,10 @@ class StyleUpdateView(View):
         form.save()
         return redirect('tracker:style_list', username)
 
-class StyleDeleteView(View):
+class StyleDeleteView(UserPassesTestMixin, View):
+    def test_func(self):
+        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+
     def get(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
         style = get_object_or_404(Style, pk=pk)

@@ -1,12 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 import calendar
-from django.utils import timezone
 import datetime
 from django.contrib.auth import get_user_model
-from django.template import Template
+from django.contrib.auth.mixins import UserPassesTestMixin
+from accounts.permissions import is_owner_or_is_teacher
 from tracker.models import Goal, Practice
-from django.conf import settings
 
 UserModel = get_user_model()
 
@@ -128,7 +127,10 @@ class MyHTMLCalendar(calendar.LocaleHTMLCalendar):
         a('</table>')
         return ''.join(v)
 
-class YearView(View):
+class YearView(UserPassesTestMixin, View):
+    def test_func(self):
+        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+
     def get(self, request, username, year):
         owner = get_object_or_404(UserModel, username=username)
         goals = goals=Goal.objects.filter(user=owner)
@@ -137,7 +139,10 @@ class YearView(View):
         html_calendar = c.formatyear(year)
         return render(request, 'tracker_calendar/year_view.html', {'cal': html_calendar, 'owner': owner})
 
-class DayView(View):
+class DayView(UserPassesTestMixin, View):
+    def test_func(self):
+        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+
     def get(self, request, username, year, month, day):
         owner = get_object_or_404(UserModel, username=username)
         date = datetime.date(year=year, month=month, day=day)
