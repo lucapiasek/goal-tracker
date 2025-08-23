@@ -27,13 +27,14 @@ class GoalListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['owner_username'] = self.kwargs['username']
+        context['owner'] = get_object_or_404(UserModel, username=self.kwargs['username'])
         return context
 
 class GoalDetailView(View):
     def get(self, request, username, pk):
+        owner = UserModel.objects.get(username=username)
         goal = get_object_or_404(Goal, pk=pk)
-        return render(request, 'tracker/goal_detail.html', {'goal': goal, 'page_title': 'Cel'})
+        return render(request, 'tracker/goal_detail.html', {'goal': goal, 'owner': owner})
 
 class GoalCreateView(View):
     def get(self, request, username):
@@ -44,7 +45,7 @@ class GoalCreateView(View):
         form = GoalCreateForm(user=owner, initial={
             'date': date
         })
-        return render(request, 'tracker/create_form.html', {'form': form, 'page_title': 'Dodaj cel'})
+        return render(request, 'tracker/create_form.html', {'form': form, 'page_title': 'Dodaj cel', 'owner': owner})
 
     def post(self, request, username):
         owner = get_object_or_404(UserModel, username=username)
@@ -63,14 +64,14 @@ class GoalCreateView(View):
                 goal.pieces.add(pieces)
 
             return redirect('tracker:goal_list')
-        return render(request, 'tracker/create_form.html', {'form': form})
+        return render(request, 'tracker/create_form.html', {'form': form, 'page_title': 'Dodaj cel', 'owner': owner})
 
 class GoalUpdateView(View):
     def get(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
         goal = get_object_or_404(Goal, pk=pk)
         form = GoalUpdateForm(instance=goal, user=owner)
-        return render(request, 'tracker/create_form.html', {'form': form})
+        return render(request, 'tracker/create_form.html', {'form': form, 'page_title': 'Zaktualizuj cel', 'owner': owner})
 
     def post (self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
@@ -82,12 +83,13 @@ class GoalUpdateView(View):
             goal.pieces.set(pieces)
             goal.save()
             return redirect('tracker:goal_detail', username, pk)
-        return render(request, 'tracker/create_form.html', {'form': form})
+        return render(request, 'tracker/create_form.html', {'form': form, 'page_title': 'Zaktualizuj cel', 'owner': owner})
 
 class GoalDeleteView(View):
     def get(self, request, username, pk):
+        owner = get_object_or_404(username=username)
         goal = get_object_or_404(Goal, pk=pk)
-        return render(request, 'tracker/delete_form.html', {'object_to_delete': goal})
+        return render(request, 'tracker/delete_form.html', {'object_to_delete': goal, 'owner':owner})
 
     def post(self, request, username, pk):
         if request.POST.get('operation') == 'Tak':
@@ -103,14 +105,15 @@ class PieceListView(View):
 
 class PieceDetailView(View):
     def get(self, request, username, pk):
+        owner = get_object_or_404(UserModel, username=username)
         piece = get_object_or_404(Piece, pk=pk)
-        return render(request, 'tracker/piece_detail.html', {'piece': piece})
+        return render(request, 'tracker/piece_detail.html', {'piece': piece, 'owner': owner})
 
 class PieceCreateView(View):
     def get(self, request, username):
         owner = get_object_or_404(UserModel, username=username)
         forms = [PieceCreateForm(user=owner), PieceInformationCreateForm()]
-        return render(request, 'tracker/piece_create.html', {'forms': forms})
+        return render(request, 'tracker/piece_create.html', {'forms': forms, 'owner': owner})
 
     def post(self, request, username):
         owner = get_object_or_404(UserModel, username=username)
@@ -130,7 +133,7 @@ class PieceCreateView(View):
                 piece.save()
             return redirect('tracker:piece_list', username)
         forms = [piece_form, piece_information_form]
-        return render(request, 'tracker/piece_create.html', {'forms': forms})
+        return render(request, 'tracker/piece_create.html', {'forms': forms,  'owner': owner})
 
 
 class PieceUpdateView(View):
@@ -145,7 +148,7 @@ class PieceUpdateView(View):
             piece_information_form = PieceInformationCreateForm(user=owner)
 
         forms = [piece_form, piece_information_form]
-        return render(request, 'tracker/piece_create.html', {'forms': forms})
+        return render(request, 'tracker/piece_create.html', {'forms': forms, 'owner': owner})
 
     def post(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
@@ -170,12 +173,13 @@ class PieceUpdateView(View):
                 piece.save()
             return redirect('tracker:piece_detail', username, piece.pk)
         forms = [piece_form, piece_information_form]
-        return render(request, 'tracker/piece_create.html', {'forms': forms})
+        return render(request, 'tracker/piece_create.html', {'forms': forms, 'owner': owner})
 
 class PieceDeleteView(View):
     def get(self, request, username, pk):
+        owner = get_object_or_404(UserModel, username=username)
         piece = get_object_or_404(Piece, pk=pk)
-        return render(request, 'tracker/delete_form.html', {'object_to_delete': piece})
+        return render(request, 'tracker/delete_form.html', {'object_to_delete': piece, 'owner': owner})
 
     def post(self, request, username, pk):
         if request.POST.get('operation') == 'Tak':
@@ -194,7 +198,7 @@ class StyleListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['owner_username'] = self.kwargs['username']
+        context['owner'] = get_object_or_404(UserModel, self.kwargs['username'])
         context['model_name'] = {
             'singular': 'styl',
             'plural': 'style'
@@ -207,16 +211,15 @@ class StyleListView(ListView):
 
 
 class StyleCreateView(View):
-    def __init__(self):
-        super().__init__()
-        self.StyleForm = modelform_factory(Style, fields=["style"], labels={"style": "Styl"})
-
     def get(self, request, username):
-        return render(request, 'tracker/create_form.html', {'form': self.StyleForm})
+        owner = get_object_or_404(UserModel, username=username)
+        StyleForm = modelform_factory(Style, fields=["style"], labels={"style": "Styl"})
+        return render(request, 'tracker/create_form.html', {'form': StyleForm, 'owner': owner})
 
     def post(self, request, username):
         owner = get_object_or_404(UserModel, username=username)
-        form = self.StyleForm(request.POST)
+        StyleForm = modelform_factory(Style, fields=["style"], labels={"style": "Styl"})
+        form = StyleForm(request.POST)
         style = form.save(commit=False)
         style.user = owner
         form.save()
@@ -225,10 +228,11 @@ class StyleCreateView(View):
 
 class StyleUpdateView(View):
     def get(self, request, username, pk):
+        owner = get_object_or_404(UserModel, username=username)
         style = get_object_or_404(Style, pk=pk)
         StyleForm = modelform_factory(Style, fields=["style"], labels={"style": "Styl"})
         form = StyleForm(instance=style)
-        return render(request, 'tracker/create_form.html', {'form': form})
+        return render(request, 'tracker/create_form.html', {'form': form, 'owner': owner})
 
     def post(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
@@ -242,5 +246,6 @@ class StyleUpdateView(View):
 
 class StyleDeleteView(View):
     def get(self, request, username, pk):
+        owner = get_object_or_404(UserModel, username=username)
         style = get_object_or_404(Style, pk=pk)
-        return render(request, 'tracker/delete_form.html', {'object_to_delete': style})
+        return render(request, 'tracker/delete_form.html', {'object_to_delete': style, 'owner': owner})

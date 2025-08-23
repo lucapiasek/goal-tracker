@@ -3,7 +3,7 @@
 <h2>Cele</h2>
 <table>
     <caption>Cele</caption>
-    <a href="{% url 'tracker:goal_create' username=owner_username %}"><button type="button">Nowy cel</button></a>
+    <a href="{% url 'tracker:goal_create' username=owner.username %}"><button type="button">Nowy cel</button></a>
     {% for goal in goal_list %}
     <tr>
         <td><a href="{% url 'tracker:goal_detail' username=goal.user.username pk=goal.pk %}">{{ goal.name }}</a></td>

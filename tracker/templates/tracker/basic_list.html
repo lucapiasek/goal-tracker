@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>{{ model_name.plural.capitalize }}</h2>
-    <a href="{% url links.create username=owner_username %}"><button type="button">Nowy {{ model_name.singular }}</button></a>
+    <a href="{% url links.create owner.username %}"><button type="button">Nowy {{ model_name.singular }}</button></a>
 <ul>
     {% for object in object_list %}
     <li><a href="{% url links.update object.user.username object.pk %}">{{ object }}</a></li>
