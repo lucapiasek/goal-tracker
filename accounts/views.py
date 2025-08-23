@@ -50,18 +50,16 @@ class UserDetailView(UserPassesTestMixin, View):
 
     def get(self, request, username):
         owner = get_object_or_404(UserModel, username=username)
+
         if not hasattr(owner, 'teacher'):
-            teacher = Teacher(user=owner)
-            teacher.save()
-            owner.teacher = teacher
-            owner.save()
-        owner = UserModel.objects.select_related('teacher').get(id=owner.id)
+            owner.teacher = False
+        else:
+            owner = UserModel.objects.select_related('teacher').get(id=owner.id)
+
         if not hasattr(owner, 'student'):
-            student = Student(user=owner)
-            student.save()
-            owner.student = student
-            owner.save()
-        owner = UserModel.objects.select_related('student').get(id=owner.id)
+            owner.student = False
+        else:
+            owner = UserModel.objects.select_related('student').get(id=owner.id)
         return render(request, 'accounts/user_detail.html', {'owner': owner})
 
 class UserUpdateView(View):
