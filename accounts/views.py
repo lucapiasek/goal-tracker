@@ -70,7 +70,7 @@ class UserUpdateView(View):
             fields=['first_name', 'last_name', 'email'],
             labels={'first_name': 'Imię', 'last_name': 'Nazwisko'}
         )
-        form = UserForm(instance=request.user)
+        form = UserForm(instance=owner)
         return render(request, 'accounts/create_form.html', {'form': form, 'owner': owner})
 
     def post(self, request):
@@ -80,6 +80,6 @@ class UserUpdateView(View):
             fields=['first_name', 'last_name', 'email'],
             labels={'first_name': 'Imię', 'last_name': 'Nazwisko'}
             )
-        form = UserForm(request.POST, instance=request.user)
+        form = UserForm(request.POST, instance=owner)
         user = form.save()
-        return redirect('accounts:user_detail', owner.username)
+        return redirect('accounts:user_detail', user.username)
