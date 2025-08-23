@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    Czy chcesz się wylogować?
+    {{ question }}
     <form method="POST">
         {% csrf_token %}
         <p><input type="submit" name="operation" value="Tak" /></p>

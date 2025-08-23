@@ -35,7 +35,10 @@ class LoginView(UserPassesTestMixin, LoginView):
 
 class LogoutView(View):
     def get(self, request):
-        return render(request, 'accounts/logout_form.html')
+        return render(
+            request,
+            'accounts/confirmation_form.html',
+            {'question':  "Czy na pewno chcesz się wylogować?"})
 
     def post(self, request):
         logout(request)
