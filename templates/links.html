@@ -9,6 +9,7 @@
     <a href="{% url 'accounts:user_detail' owner.username %}">Studenci</a>
 {% endif %}
 <a href="{% url 'accounts:user_detail' user.username %}">Mój profil </a>
+    <a href="{% url 'accounts:invitation_list' user.username %}">Zaproszenia</a>
 <a href="{% url 'accounts:logout' %}">Wyloguj</a>
 
 

@@ -12,6 +12,9 @@ class Student(models.Model):
             teacher.student_invitation.remove(self)
         self.save()
 
+    def __str__(self):
+        return self.user.username
+
 class Teacher(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='teacher')
     students = models.ManyToManyField(Student, blank=True, related_name="teachers")
@@ -23,3 +26,6 @@ class Teacher(models.Model):
         if student.teacher_invitations.all().contains(self):
             student.teacher_invitation.remove(self)
         self.save()
+
+    def __str__(self):
+        return self.user.username
