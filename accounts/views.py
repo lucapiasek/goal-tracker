@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.views import View
 from django.contrib.auth.forms import UserCreationForm
@@ -10,7 +11,7 @@ from django.utils.decorators import method_decorator
 from .forms import InvitationForm
 from .models import Teacher, Student
 from django.forms import modelform_factory
-from .permissions import is_owner_or_is_teacher
+from .permissions import is_owner_or_is_teacher, is_owner
 from .utils import if_not_teacher_create, if_not_student_create
 
 UserModel = get_user_model()
@@ -93,7 +94,7 @@ class StudentInviteView(View):
             'invitation_type': 'student'
         })
         return render(request, 'accounts/search_form.html', {
-            'form': form
+            'form': form,
             'page_title': 'Zaproś nauczyciela',
             'button_value': 'Zaproś',
             'owner': request.user
@@ -123,7 +124,7 @@ class TeacherInviteView(View):
             'invitation_type': 'student'
         })
         return render(request, 'accounts/search_form.html', {
-            'form': form
+            'form': form,
             'page_title': 'Zaproś nauczyciela',
             'button_value': 'Zaproś',
             'owner': request.user
@@ -145,3 +146,72 @@ class TeacherInviteView(View):
                 'owner': inviting_user
             })
         return redirect ('accounts/user_detail', request.user)
+
+class AcceptStudentInvitationView():
+    def get(self, request, username):
+        inviting = get_object_or_404(UserModel, username=username)
+        invited = get_user(request)
+        if hasattr(inviting, 'student') and hasattr(invited, 'teacher'):
+            try:
+                is_invited = inviting.student.teacher_invitations.get(teacher=invited.teacher)
+                return render(request, 'accounts/confirmation_form.html', {
+                    'question': f"Czy chcesz potwierdzić zaproszenie od studenta {inviting.username}",
+                    'owner': request.user
+                })
+            except Teacher.DoesNotExist:
+                raise Http404("Page not found.")
+        raise Http404("Page not found.")
+
+    def post(self, request, username):
+        operation = request.POST.get(['operation'])
+        if operation == 'Tak':
+            inviting = get_object_or_404(UserModel, username=username)
+            user = get_user(request)
+            user.teacher.students.add(inviting.student)
+            user.save()
+            user.teacher.remove_invitations(inviting.student)
+            success_message = f"Przyjęto zaproszenie od użytkownika {username}"
+        if operation == 'Nie':
+            inviting = get_object_or_404(UserModel, username=username)
+            user.remove_invitations(inviting.student)
+            success_message = "Zaproszenie zostało odrzucone."
+
+        return render(request, 'accounts/success.html', {
+            'success_message': success_message,
+            'owner': request.user
+        })
+
+class AcceptTeacherInvitationView():
+    def get(self, request, username):
+        inviting = get_object_or_404(UserModel, username=username)
+        invited = get_user(request)
+        if hasattr(inviting, 'teacher') and hasattr(invited, 'student'):
+            try:
+                is_invited = inviting.teacher.student_invitations.get(teacher=invited.student)
+                return render(request, 'accounts/confirmation_form.html', {
+                    'question': f"Czy chcesz potwierdzić zaproszenie od studenta {inviting.username}",
+                    'owner': request.user
+                })
+            except Teacher.DoesNotExist:
+                raise Http404("Page not found.")
+        raise Http404("Page not found.")
+
+    def post(self, request, username):
+        operation = request.POST.get(['operation'])
+        if operation == 'Tak':
+            inviting = get_object_or_404(UserModel, username=username)
+            user = get_user(request)
+            user.student.teachers.add(inviting.teacher)
+            user.save()
+            user.student.remove_invitations(inviting.teacher)
+            success_message = f"Przyjęto zaproszenie od użytkownika {username}"
+        if operation == 'Nie':
+            inviting = get_object_or_404(UserModel, username=username)
+            user.remove_invitations(inviting.teacher)
+            success_message = "Zaproszenie zostało odrzucone."
+
+        return render(request, 'accounts/success.html', {
+            'success_message': success_message,
+            'owner': request.user
+        })
+
