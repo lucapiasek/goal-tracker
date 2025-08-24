@@ -17,5 +17,15 @@ def is_teacher(user, username):
         return False
     return False
 
-def is_owner_or_is_teacher(request, username):
-    return is_owner(request, username) or is_teacher(request, username)
+def is_owner_or_is_teacher(user, username):
+    return is_owner(user, username) or is_teacher(user, username)
+
+def is_student(user, username):
+    owner = get_object_or_404(UserModel, username=username)
+    if user != owner:
+        if hasattr(owner, 'student'):
+            if user.teacher.is_teacher:
+                students = user.teacher.students.all()
+                return students.contains(owner.student)
+        return False
+    return False
