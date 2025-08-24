@@ -17,7 +17,7 @@ class InvitationForm(forms.Form):
         inviting = cleaned_data.get('inviting')
         invitation_type = cleaned_data.get('invitation_type')
 
-        permitted_invitation_types = ['student', 'teacher']
+        permitted_invitation_types = {'student': 'student', 'teacher': 'teacher'}
 
         if invitation_type not in permitted_invitation_types:
             raise ValidationError('Form tampered. Please do not do this.')
@@ -25,9 +25,9 @@ class InvitationForm(forms.Form):
         try:
             invited_user = UserModel.objects.get(username=invited)
             inviting_user = UserModel.objects.get(username=inviting)
-            if hasattr(invited_user, invitation_type):
-                permitted_invitation_types.pop(invitation_type)
-                if hasattr(inviting_user, invitation_type):
+            if hasattr(inviting_user, invitation_type):
+                removed_from_dict = permitted_invitation_types.pop(invitation_type)
+                if hasattr(invited_user, [value for value in permitted_invitation_types.values()][0]):
                     error = ValidationError('Użytkownik już został zaproszony')
                     if invitation_type == 'student':
                         if invited_user.teacher.student_invitations.all().contains(inviting.student):
