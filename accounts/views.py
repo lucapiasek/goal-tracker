@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_not_required
 from django.contrib.auth import get_user_model, logout, get_user
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from .forms import InvitationForm
 from .models import Teacher, Student
 from django.forms import modelform_factory
 from .permissions import is_owner_or_is_teacher
@@ -87,40 +88,60 @@ class UserUpdateView(View):
 
 class StudentInviteView(View):
     def get(self, request):
-        return render(request, 'accounts/search_post_form.html', {
+        form = InvitationForm(initial={
+            'inviting': request.user.username,
+            'invitation_type': 'student'
+        })
+        return render(request, 'accounts/search_form.html', {
+            'form': form
             'page_title': 'Zaproś nauczyciela',
             'button_value': 'Zaproś',
             'owner': request.user
         })
 
     def post(self, request):
-        invited = request.POST['searched']
-        user = get_user(request)
-
-        try:
+        form = InvitationForm(request.POST)
+        if form.is_valid():
+            invited = form.cleaned_data.get('invited')
             invited_user = UserModel.objects.get(username=invited)
             if_not_teacher_create(invited_user)
-            if_not_student_create(user)
-            if invited_user.teacher.students.all().contains(user.student):
-                success_message = "Nauczyciel już jest zaproszony."
-
-            else:
-                already_invited = user.student.teacher_invitations.all()
-                already_invited.teacher_invitations.add(invited_user.teacher)
-                success_message = "Wysłano zaproszenie do %s." % invited
-
+            inviting_user = get_user(request)
+            if_not_student_create(inviting_user)
+            invited_user.teacher.student_invitations.add(inviting_user.student)
+            invited_user.save()
             return render(request, 'accounts/success.html', {
                 'page_title': 'Zaproś nauczyciela',
-                'success_message': success_message,
-                'owner': user
+                'success_message': 'Nauczyciel został zaproszony.',
+                'owner': inviting_user
             })
+        return redirect ('accounts/user_detail', request.user)
 
-        except UserModel.DoesNotExist:
-            return render(request, 'accounts/search_post_form.html', {
+class TeacherInviteView(View):
+    def get(self, request):
+        form = InvitationForm(initial={
+            'inviting': request.user.username,
+            'invitation_type': 'student'
+        })
+        return render(request, 'accounts/search_form.html', {
+            'form': form
             'page_title': 'Zaproś nauczyciela',
             'button_value': 'Zaproś',
-            'owner': user,
-            'form_err': 'Nie ma użytkownika o podanym username'
+            'owner': request.user
         })
 
-
+    def post(self, request):
+        form = InvitationForm(request.POST)
+        if form.is_valid():
+            invited = form.cleaned_data.get('invited')
+            invited_user = UserModel.objects.get(username=invited)
+            if_not_teacher_create(invited_user)
+            inviting_user = get_user(request)
+            if_not_student_create(inviting_user)
+            invited_user.teacher.student_invitations.add(inviting_user.student)
+            invited_user.save()
+            return render(request, 'accounts/success.html', {
+                'page_title': 'Zaproś nauczyciela',
+                'success_message': "Student został zaproszony.",
+                'owner': inviting_user
+            })
+        return redirect ('accounts/user_detail', request.user)
