@@ -49,21 +49,23 @@ class LogoutView(View):
 
 class UserDetailView(UserPassesTestMixin, View):
     def test_func(self):
-        return is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get(self, request, username):
         owner = get_object_or_404(UserModel, username=username)
 
         if not hasattr(owner, 'teacher'):
-            owner.teacher = False
+            is_teacher = False
         else:
             owner = UserModel.objects.select_related('teacher').get(id=owner.id)
+            is_teacher = True
 
         if not hasattr(owner, 'student'):
-            owner.student = False
+            is_student = False
         else:
             owner = UserModel.objects.select_related('student').get(id=owner.id)
-        return render(request, 'accounts/user_detail.html', {'owner': owner})
+            is_student = True
+        return render(request, 'accounts/user_detail.html', {'owner': owner, 'is_teacher': 'is_teacher', 'is_student': 'is_student'})
 
 class UserUpdateView(View):
     def get(self, request):
@@ -231,7 +233,7 @@ class InvitationListView(View):
         student_invitations = user.teacher.student_invitations.all() if hasattr(user, 'teacher') else UserModel.objects.empty()
         return render(
             request,
-            'accounts:invitation_list.html',
+            'accounts/invitation_list.html',
             {
                 'teacher_invitations': teacher_invitations,
                 'student_invitations': student_invitations,

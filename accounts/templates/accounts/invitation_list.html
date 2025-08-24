@@ -6,7 +6,7 @@
     <h3>Zaproszenia od nauczycieli</h3>
     <ul>
         {% for teacher in teacher_invitations %}
-        <li><a href="{% url 'accounts:accept_teacher' teacher.username %}">{{ teacher }}</a></li>
+        <li><a href="{% url 'accounts:accept_teacher' teacher.user.username %}">{{ teacher }}</a></li>
         {% empty %}
             <li>Tu pojawią się zaproszenia od nauczycieli.</li>
         {% endfor %}
@@ -14,7 +14,7 @@
     <h3>Zaproszenia od studentów</h3>
     <ul>
         {% for student in student_invitations %}
-        <li><a href="{% url 'accounts:accept_student' student.username %}">{{ student }}</a></li>
+        <li><a href="{% url 'accounts:accept_student' student.user.username %}">{{ student }}</a></li>
         {% empty %}
             <li>Tu pojawią się zaproszenia od studentów.</li>
         {% endfor %}
