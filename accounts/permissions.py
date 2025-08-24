@@ -3,15 +3,14 @@ from django.shortcuts import get_object_or_404
 
 UserModel = get_user_model()
 
-def is_owner(request, username):
+def is_owner(user, username):
     owner = get_object_or_404(UserModel, username=username)
-    return request.user == owner
+    return user == owner
 
-def is_teacher(request, username):
+def is_teacher(user, username):
     owner = get_object_or_404(UserModel, username=username)
-    if request.user != owner:
-        user = get_user(request)
-        if hasattr(user, 'teacher') and hasattr(owner, 'student'):
+    if user != owner:
+        if hasattr(user, 'teacher'):
             if user.teacher.is_teacher:
                 students = user.teacher.students.all()
                 return students.contains(owner.student)
