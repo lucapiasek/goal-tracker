@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.decorators import login_not_required
-from django.contrib.auth import get_user_model, logout, get_user
+from django.contrib.auth import get_user_model, login, logout, get_user
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from .forms import InvitationForm
@@ -16,22 +16,28 @@ from .utils import if_not_teacher_create, if_not_student_create
 
 UserModel = get_user_model()
 
-@method_decorator(login_not_required, name='dispatch')
+
 class UserCreateView(View):
+    @method_decorator(login_not_required)
     def get(self, request):
         form = UserCreationForm()
         return render(request, 'accounts/create_user.html', {'form': form, 'page_title': "Zarejestruj się"})
 
+    @method_decorator(login_not_required)
     def post(self, request):
         form = UserCreationForm(request.POST)
-        user = form.save()
-        return redirect('tracker_calendar:year', user.username, timezone.now().year)
+        if form.is_valid:
+            user = form.save()
+            login(request, user)
+            year = timezone.now().year
+            return redirect('tracker_calendar:year', user.username, year)
+        return render(request, 'accounts/create_user.html', {'form': form, 'page_title': "Zarejestruj się"})
 
 class LoginView(LoginView):
     template_name = 'accounts/login_form.html'
     next_page = 'accounts:user_update'
     extra_context = {'page_title': "Zaloguj się"}
-    redirect_authenticated_user = True
+    redirect_authenticated_user = False
 
     def get_default_redirect_url(self):
         return reverse('accounts:user_detail', args=[self.request.user.username])
