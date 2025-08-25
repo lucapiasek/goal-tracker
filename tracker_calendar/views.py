@@ -32,7 +32,7 @@ class DayView(UserPassesTestMixin, View):
         if request.user == owner:
             practice_list = Practice.objects.filter(task__user=owner).filter(date=date)
         else:
-            practice_list = None
+            practice_list = Practice.objects.none()
         return render(
             request,
             'tracker_calendar/day_view.html',
