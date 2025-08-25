@@ -1,7 +1,8 @@
 import calendar
 import datetime
-
 from tracker.models import Goal, Practice
+
+mdays = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 
 class MyHTMLCalendar(calendar.LocaleHTMLCalendar):
@@ -15,22 +16,25 @@ class MyHTMLCalendar(calendar.LocaleHTMLCalendar):
         goals_filtered = self.goals.filter(date=datetime.date(year=y, month=m, day=d))
         practices_filtered=self.practice.filter(date=datetime.date(year=y, month=m, day=d))
         result = ''
-        for goal in goals_filtered:
+        for goal in goals_filtered.iterator():
             result += goal.__str__()
-        for practice in practices_filtered:
+        for practice in practices_filtered.iterator():
             result += practice.__str__()
         return result
 
-    def monthlen(self, year, month):
-        return calendar.mdays[month] + (month == calendar.FEBRUARY and calendar.isleap(year))
+    @staticmethod
+    def monthlen(year, month):
+        return mdays[month] + (month == calendar.FEBRUARY and calendar.isleap(year))
 
-    def prevmonth(self, year, month):
+    @staticmethod
+    def prevmonth(year, month):
         if month == 1:
             return year - 1, 12
         else:
             return year, month - 1
 
-    def nextmonth(self, year, month):
+    @staticmethod
+    def nextmonth(year, month):
         if month == 12:
             return year + 1, 1
         else:
