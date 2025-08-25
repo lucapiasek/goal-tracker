@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Wyzwanie</h2>
+    <h2>{{ challenge }}</h2>
+    <a href="{% url 'tasks:practice_create' owner.username challenge.task.id %}"><button>Dodaj ćwiczenie</button></a>
+    {% if challenge.start_date %}
+    Data rozpoczęcia: {{ challenge.start_date }}
+    {% else %}
+    Data dodania: <i>{{ challenge.date_added }} </i>
+    {% endif %}
+    {% if challenge.minimum_number_of_days %}<p>Minimalna liczba dni, w których trzeba wykonywać zadanie: {{ minimum_number_of_days }}</p>{% endif %}
+    {% if challenge.minimum_number_of_repetitions %}<p>Minimalna liczba powtórzeń w jednym zadaniu: {{ minimum_number_of_repetitions }}</p>{% endif %}
+    {% if challenge.minimum_total_repetitions %}<p>Minimalna liczba wszystkich powtórzeń: {{ minimum_number_of_days }}</p>{% endif %}
+    Czy wymagania zostały spełnione: <input type="checkbox" disabled checked="{% if challenge.are_requirements_fulfilled %}checked{% else %}false{% endif %}" />
+    Wyzwanie zaliczone: <input type="checkbox" disabled checked="{% if challenge.is_completed %}checked{% else %}false{% endif %}" />
+    <a href="{% url 'challenge:confirm' owner.username challenge.pk %}"><button>Zalicz wyzwanie</button></a>
+{% endblock %}

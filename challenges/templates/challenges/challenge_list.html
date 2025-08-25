@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Wyzwania</h2>
-    <a href="{% url 'challenges:create' %}"><button type="button">Nowe wyzwanie</button></a>
-    <a href="{% url 'tasks:list' %}"><button type="button">Utwórz zadanie z wyzwania</button></a>
+    <a href="{% url 'challenges:create' owner.username %}"><button type="button">Nowe wyzwanie</button></a>
+    <a href="{% url 'tasks:list' owner.username %}"><button type="button">Utwórz z zadania</button></a>
 <ul>
     {% for challenge in challenge_list %}
-    <li><a href="{% url 'challenges:detail' %}">{{ challenge }}</a></li>
+    <li><a href="{% url 'challenges:detail' %}">{{ challenge }}</a><a href="{% url 'challenge:confirm' owner.username challenge.pk %}"><button>Zalicz wyzwanie</button></a></li>
     {% empty %}
         <li>Tu pojawią się dodane przez Ciebie wyzwania.</li>
     {% endfor %}
