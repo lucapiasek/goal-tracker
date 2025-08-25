@@ -7,7 +7,7 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         use_required_attribute = False
-        fields = ('goal', 'piece', 'element', 'method', 'is_suggested')
+        fields = ('goal', 'piece', 'element', 'method', 'are_suggestions_enabled')
 
 
     def __init__(self, *args, **kwargs):

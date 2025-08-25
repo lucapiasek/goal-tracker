@@ -7,8 +7,8 @@
         <td><a href="{% url 'task:detail' task.user.username %}">{{ task }}</a></td>
         <td><a href="{% url 'challenges:create_from_task' task.user.username task.pk %}"><button>Utwórz wyzwanie</button></a></td>
         <td><input type="checkbox" {% if task.is_summarized %}checked="checked" {% endif %}/> -podsumowanie|</td>
-        {% if task.is_suggested %}
-                <td>|<input type="checkbox" {% if task.is_suggested %}checked="checked" {% endif %}/>sugestie ćwiczeń</td>
+        {% if task.are_suggestions_enabled %}
+                <td>|<input type="checkbox" checked="{% if task.are_suggestions_enabled %}checked{% else %}{% endif %}" />sugestie ćwiczeń</td>
         {% endif %}
     {% empty %}
         <td>Tu pojawią się dodane przez Ciebie ćwiczenia.</td>

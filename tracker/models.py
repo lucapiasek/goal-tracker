@@ -87,7 +87,9 @@ class Task(models.Model):
     parts = models.ManyToManyField("Part", blank=True, related_name="tasks")
     element = models.CharField(max_length=80, blank=True, default='')
     method = models.CharField(max_length=100, blank=True, default='')
+    are_suggestions_enabled = models.BooleanField(default=True)
     is_suggested = models.BooleanField(default=False)
+    was_practiced = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.piece if self.piece else self.goal} {self.parts if self.parts else ''} {self.element if self.element else ''} {self.method if self.method else ''}"
@@ -99,11 +101,12 @@ class Practice(models.Model):
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     repetitions = models.DecimalField(decimal_places=1, max_digits=3, blank=True, null=True)
+    is_summarized = models.BooleanField(null=True)
     is_completed = models.BooleanField(null=True)
     completion_percentage = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.task}, {self.date}, {self.start_time if self.start_time else ''} {self.end_time if self.end_time else ''}"
+        return f"{self.date}, {self.start_time if self.start_time else ''} {self.end_time if self.end_time else ''}"
 
 class Part(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -118,9 +121,19 @@ class Part(models.Model):
 
 class Challenge(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    tasks = models.ManyToManyField("Task", related_name="challenges")
+    task = models.ForeignKey("Task", related_name="challenges", on_delete=models.CASCADE)
+    date_added = models.DateField(auto_now_add=True)
+    start_date = models.DateField(blank=True, null=True)
     minimum_number_of_days = models.IntegerField(blank=True, null=True)
     minimum_number_of_repetitions = models.IntegerField(blank=True, null=True)
     minimum_total_repetitions = models.IntegerField(blank=True, null=True)
-    is_completed = models.BooleanField(null=True)
+    are_requirements_fulfilled = models.BooleanField(default=False)
+    is_completed = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f"{self.task} - added: {self.start_date if self.start_date else self.date_added}"
+
+    def is_fulfilled(self):
+        if self.task.was_practiced:
+            pass
+        self.are_requirements_fulfilled = False

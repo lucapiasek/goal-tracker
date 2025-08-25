@@ -3,6 +3,7 @@
 <h2>Ćwiczenie</h2>
     <h2>{{ task }}</h2><a href="{% url 'tasks:create' task.username %}"><button type="button">Zaktualizuj ćwiczenie</button></a>
     <a href="{% url 'challenges:create_from_task' task.user.username task.pk %}"><button>Utwórz wyzwanie z zadania</button></a>
+     Czy sugestie ćwiczeń są włączone: <input type="checkbox" disabled checked="{% if task.are_suggestions_enabled %}checked{% else %}false{% endif %}" />
 <table>
     {% if task.was_practiced %}{% for practice in practice_list %}
         <td><a href="{% url 'tasks:practice_update' task.user.username %}?next={% url 'tasks:detail' task.user.username task.pk %}">{{ practice }}</a></td>
