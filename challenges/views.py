@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from tracker.models import Challenge, Task
-from .forms import ChallengeForm, TaskForm
+from .forms import ChallengeForm
+from tasks.forms import TaskForm
 from django.views import View
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -12,8 +13,8 @@ class ChallengeListView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
-    def get(self, request):
-        owner = get_object_or_404(UserModel, username=self.kwargs['username'])
+    def get(self, request, username):
+        owner = get_object_or_404(UserModel, username=username)
         challenge_list =  Challenge.objects.filter(user=owner)
         return render(request, "challenges/challenge_list.html", {
             'challenge_list': challenge_list,
@@ -47,7 +48,8 @@ class ChallengeCreateView(UserPassesTestMixin, View):
         task.user = owner
         task.save()
         challenge = challenge_form.save(commit=False)
-        challenge.piece_id = task.pk
+        challenge.task.pk = task.pk
+        challenge.user = owner
         challenge.save()
         task.challenge = challenge
         task.save()
@@ -57,13 +59,13 @@ class ChallengeCreateFromTaskView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
-    def get(self, request, username, task_pk):
+    def get(self, request, username, task_id):
         owner = get_object_or_404(UserModel, username=username)
-        task = get_object_or_404(Task, pk=task_pk)
+        task = get_object_or_404(Task, pk=task_id)
         forms = [TaskForm(user=owner, instance=task), ChallengeForm()]
-        return render(request, 'challenges/create_forms.html', {'forms': forms, 'owner': owner})
+        return render(request, 'challenges/create_forms.html', {'forms': forms, 'owner': owner, 'page_title': 'Utwórz wyzwanie'})
 
-    def post(self, request, username, task_pk):
+    def post(self, request, username, task_id):
         owner = get_object_or_404(UserModel, username=username)
         task_form = TaskForm(request.POST, user=owner)
         challenge_form = ChallengeForm(request.POST)
@@ -71,7 +73,8 @@ class ChallengeCreateFromTaskView(UserPassesTestMixin, View):
         task.user = owner
         task.save()
         challenge = challenge_form.save(commit=False)
-        challenge.piece_id = task.pk
+        challenge.task = task
+        challenge.user = owner
         challenge.save()
         task.challenge = challenge
         task.save()
@@ -93,8 +96,8 @@ class ChallengeDeleteView(UserPassesTestMixin, View):
         return redirect('challenge:list', username)
 
 class ChallengeConfirmView(UserPassesTestMixin, View):
-    def test_func(self, request):
-        return is_teacher(request.user.username, request.kwargs['username'])
+    def test_func(self):
+        return is_teacher(self.request.user.username, self.kwargs['username'])
 
     def get(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)

@@ -5,7 +5,7 @@
 <table>
     <tr>
     {% for task in task_list %}
-        <td><a href="{% url 'task:detail' task.user.username %}">{{ task }}</a></td>
+        <td><a href="{% url 'tasks:detail' task.user.username task.pk %}">{{ task }}</a></td>
         <td><a href="{% url 'challenges:create_from_task' task.user.username task.pk %}"><button>Utwórz wyzwanie</button></a></td>
         <td><input type="checkbox" {% if task.is_summarized %}checked="checked" {% endif %}/> -podsumowanie|</td>
         {% if task.are_suggestions_enabled %}
