@@ -26,7 +26,7 @@ class UserCreateView(View):
     @method_decorator(login_not_required)
     def post(self, request):
         form = UserCreationForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             user = form.save()
             login(request, user)
             year = timezone.now().year
