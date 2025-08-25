@@ -13,5 +13,5 @@
     {% if challenge.minimum_total_repetitions %}<p>Minimalna liczba wszystkich powtórzeń: {{ minimum_number_of_days }}</p>{% endif %}
     Czy wymagania zostały spełnione: <input type="checkbox" disabled checked="{% if challenge.are_requirements_fulfilled %}checked{% else %}false{% endif %}" />
     Wyzwanie zaliczone: <input type="checkbox" disabled checked="{% if challenge.is_completed %}checked{% else %}false{% endif %}" />
-    <a href="{% url 'challenge:confirm' owner.username challenge.pk %}"><button>Zalicz wyzwanie</button></a>
+    <a href="{% url 'challenges:confirm' owner.username challenge.pk %}"><button>Zalicz wyzwanie</button></a>
 {% endblock %}
