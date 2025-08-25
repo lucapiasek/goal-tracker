@@ -16,7 +16,7 @@ class GoalListView(UserPassesTestMixin, ListView):
     model = Goal
 
     def test_func(self):
-        return is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get_queryset(self):
         owner = get_object_or_404(UserModel, username=self.kwargs['username'])
@@ -29,7 +29,7 @@ class GoalListView(UserPassesTestMixin, ListView):
 
 class GoalDetailView(UserPassesTestMixin, View):
     def test_func(self):
-        return is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get(self, request, username, pk):
         owner = UserModel.objects.get(username=username)
@@ -38,7 +38,7 @@ class GoalDetailView(UserPassesTestMixin, View):
 
 class GoalCreateView(UserPassesTestMixin, View):
     def test_func(self):
-        return is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get(self, request, username):
         owner = UserModel.objects.get(username=username)
@@ -71,7 +71,7 @@ class GoalCreateView(UserPassesTestMixin, View):
 
 class GoalUpdateView(UserPassesTestMixin, View):
     def test_func(self):
-        return is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
@@ -93,7 +93,7 @@ class GoalUpdateView(UserPassesTestMixin, View):
 
 class GoalDeleteView(UserPassesTestMixin, View):
     def test_func(self):
-        return is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get(self, request, username, pk):
         owner = get_object_or_404(username=username)
@@ -108,16 +108,16 @@ class GoalDeleteView(UserPassesTestMixin, View):
 
 class PieceListView(UserPassesTestMixin, View):
     def test_func(self):
-        return is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get(self, request, username):
         owner = get_object_or_404(UserModel, username=username)
         queryset = Piece.objects.filter(user=owner)
-        return render(request, 'tracker/piece_list.html', {'piece_list': queryset, 'username': username})
+        return render(request, 'tracker/piece_list.html', {'piece_list': queryset, 'username': username, 'owner': owner})
 
 class PieceDetailView(UserPassesTestMixin, View):
     def test_func(self):
-        return is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
@@ -126,7 +126,7 @@ class PieceDetailView(UserPassesTestMixin, View):
 
 class PieceCreateView(UserPassesTestMixin, View):
     def test_func(self):
-        return is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get(self, request, username):
         owner = get_object_or_404(UserModel, username=username)
@@ -155,7 +155,7 @@ class PieceCreateView(UserPassesTestMixin, View):
 
 class PieceUpdateView(UserPassesTestMixin, View):
     def test_func(self):
-        return is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
@@ -197,7 +197,7 @@ class PieceUpdateView(UserPassesTestMixin, View):
 
 class PieceDeleteView(UserPassesTestMixin, View):
     def test_func(self):
-        return is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
@@ -216,7 +216,7 @@ class StyleListView(UserPassesTestMixin, ListView):
     context_object_name = "object_list"
 
     def test_func(self):
-        return is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get_queryset(self):
         owner = get_object_or_404(UserModel, username=self.kwargs['username'])
@@ -237,7 +237,7 @@ class StyleListView(UserPassesTestMixin, ListView):
 
 class StyleCreateView(UserPassesTestMixin, View):
     def test_func(self):
-        return is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get(self, request, username):
         owner = get_object_or_404(UserModel, username=username)
@@ -255,7 +255,7 @@ class StyleCreateView(UserPassesTestMixin, View):
 
 class StyleUpdateView(UserPassesTestMixin, View):
     def test_func(self):
-        return is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
@@ -276,7 +276,7 @@ class StyleUpdateView(UserPassesTestMixin, View):
 
 class StyleDeleteView(UserPassesTestMixin, View):
     def test_func(self):
-        return is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
