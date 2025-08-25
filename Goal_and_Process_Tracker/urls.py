@@ -21,5 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('tracker.urls')),
     path('', include('accounts.urls')),
-    path('', include('tracker_calendar.urls'))
+    path('', include('tracker_calendar.urls')),
+    path('', include('tasks.urls')),
+    path('', include('challenges.urls')),
+    path('', include('suggestions.urls'))
 ]
