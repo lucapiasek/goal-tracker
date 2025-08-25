@@ -124,16 +124,38 @@ class Challenge(models.Model):
     task = models.ForeignKey("Task", related_name="challenges", on_delete=models.CASCADE)
     date_added = models.DateField(auto_now_add=True)
     start_date = models.DateField(blank=True, null=True)
-    minimum_number_of_days = models.IntegerField(blank=True, null=True)
-    minimum_number_of_repetitions = models.IntegerField(blank=True, null=True)
-    minimum_total_repetitions = models.IntegerField(blank=True, null=True)
+    minimum_number_of_days = models.IntegerField(default=0)
+    minimum_number_of_repetitions = models.IntegerField(default=0)
+    minimum_total_repetitions = models.IntegerField(default=0)
     are_requirements_fulfilled = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.task} - added: {self.start_date if self.start_date else self.date_added}"
 
-    def is_fulfilled(self):
+    def check_number_of_days(self):
         if self.task.was_practiced:
-            pass
-        self.are_requirements_fulfilled = False
+            task = Task.objects.select_related('practice').get(task=self.task)
+            if self.minimum_number_of_days <= 0:
+                return True
+            else:
+                required_repetitions = self.minimum_number_of_repetitions if self.minimum_number_of_repetitions >= 0 else 0
+                if self.minimum_number_of_days < len(task.practice_set.filter(repetitons__gte=required_repetitions).dates('date', 'day')):
+                    return True
+        return False
+
+    def check_repetitions(self):
+        if self.task.was_practiced:
+            if self.minimum_total_repetitions <= 0:
+                return True
+            else:
+                total_repetitions = Practice.objects.filter(task=self.task).aggregate(total_repetitions=models.Sum("repetitions"))[0]
+                return self.minimum_total_repetitions <= total_repetitions
+        return False
+
+    def check_if_fulfilled(self):
+        return self.check_number_of_days() and self.check_repetitions()
+
+    def set_are_requirements_fulfilled(self):
+        self.are_requirements_fulfilled = self.check_if_fulfilled()
+        return self.are_requirements_fulfilled
