@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 from django.shortcuts import reverse
+from django.utils import dateparse, timezone
+from django.core.mail import send_mail
 
 class Goal(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -93,6 +95,28 @@ class Task(models.Model):
 
     def __str__(self):
         return f"{self.piece if self.piece else self.goal} {self.parts if self.parts else ''} {self.element if self.element else ''} {self.method if self.method else ''}"
+
+    def timedeltas(self):
+        initial = [3, 4, 7, 28, 84]
+        return [dateparse.parse_duration(f"{value} 00:00:00.000000") for value in initial]
+
+    def set_is_suggested(self):
+        today = timezone.localdate(timezone.now())
+        practiced_at = self.practice_set.earliest('date').date
+        if today - practiced_at in self.timedeltas():
+            self.is_suggested = True
+        else:
+            self.is_suggested = False
+
+    def send_email_suggestion(self):
+        if self.are_suggestions_enabled and hasattr(self.user, 'email'):
+            last_practice = self.practice_set.latest('date')
+            send_mail(
+                "Practice suggestion",
+                f"You practiced {self.__str__()} at {last_practice}. Practice now!",
+                recipient_list=[f'{self.user.email}']
+            )
+
 
 class Practice(models.Model):
     task = models.ForeignKey("Task", on_delete=models.CASCADE)
