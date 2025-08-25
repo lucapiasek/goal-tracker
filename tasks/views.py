@@ -29,8 +29,8 @@ class TaskDetailView(UserPassesTestMixin, View):
 
     def get(self, request, username, pk):
         owner = UserModel.objects.get(username=username)
-        goal = get_object_or_404(Goal, pk=pk)
-        return render(request, 'tasks/goal_detail.html', {'goal': goal, 'owner': owner})
+        task = get_object_or_404(Task, pk=pk)
+        return render(request, 'tasks/task_detail.html', {'task': task, 'owner': owner})
 
 class TaskCreateView(UserPassesTestMixin, View):
     def test_func(self):
@@ -53,7 +53,7 @@ class TaskCreateView(UserPassesTestMixin, View):
                 practice = practice_form.save(commit=False)
                 practice.task_id = task.pk
                 practice.save()
-                task.practice = practice
+                task.practice_set.add(practice)
                 task.was_practiced = True
                 task.save()
             return redirect('tracker:piece_list', username)
