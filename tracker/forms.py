@@ -9,7 +9,7 @@ class GoalCreateForm(forms.Form):
     pieces = forms.ModelMultipleChoiceField(queryset=Piece.objects.none(), label="Utwory", required=False, widget=forms.CheckboxSelectMultiple)
     date = forms.DateField(required=False, label='Data')
     time = forms.TimeField(label="Godz.", required=False)
-    additional_info = forms.CharField(label="Dodatkowe informacje", required=False, )
+    additional_info = forms.CharField(label="Dodatkowe informacje", required=False)
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)

@@ -85,7 +85,7 @@ class ChallengeDeleteView(UserPassesTestMixin, View):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username']) and not is_student(self.request.user, self.kwargs['username'])
 
     def get(self, request, username, pk):
-        owner = get_object_or_404(username=username)
+        owner = get_object_or_404(UserModel, username=username)
         challenge = get_object_or_404(Challenge, pk=pk)
         return render(request, 'tasks/delete_form.html', {'object_to_delete': challenge, 'owner':owner})
 

@@ -28,7 +28,7 @@ class TaskDetailView(UserPassesTestMixin, View):
         return is_owner(self.request.user, self.kwargs['username'])
 
     def get(self, request, username, pk):
-        owner = UserModel.objects.get(username=username)
+        owner = get_object_or_404(UserModel, username=username)
         task = get_object_or_404(Task, pk=pk)
         return render(request, 'tasks/task_detail.html', {'task': task, 'owner': owner})
 
@@ -82,9 +82,9 @@ class TaskDeleteView(UserPassesTestMixin, View):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get(self, request, username, pk):
-        owner = get_object_or_404(username=username)
+        owner = get_object_or_404(UserModel, username=username)
         task = get_object_or_404(Task, pk=pk)
-        return render(request, 'tasks/delete_form.html', {'object_to_delete': goal, 'owner':owner})
+        return render(request, 'tasks/delete_form.html', {'object_to_delete': task, 'owner':owner})
 
     def post(self, request, username, pk):
         if request.POST.get('operation') == 'Tak':
@@ -143,6 +143,12 @@ class PracticeUpdateView(UserPassesTestMixin, View):
 class PracticeDeleteView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
+
+    def get(self, request, username, pk):
+        owner = get_object_or_404(UserModel, username=username)
+        practice = get_object_or_404(Practice, pk=pk)
+        return render(request, 'tasks/delete_form.html', {'object_to_delete': practice, 'owner':owner})
+
 
     def post(self, request, username, pk):
         if request.POST.get('operation') == 'Tak':

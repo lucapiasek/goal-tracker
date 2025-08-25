@@ -42,17 +42,12 @@ class GoalCreateView(UserPassesTestMixin, View):
 
     def get(self, request, username):
         owner = UserModel.objects.get(username=username)
-        date = request.session.get('last_visited_date', None)
-        if date:
-            date = datetime.date(**date)
-        form = GoalCreateForm(user=owner, initial={
-            'date': date
-        })
+        form = GoalCreateForm(user=owner)
         return render(request, 'tracker/create_form.html', {'form': form, 'page_title': 'Dodaj cel', 'owner': owner})
 
     def post(self, request, username):
         owner = get_object_or_404(UserModel, username=username)
-        form = GoalCreateForm(request.POST)
+        form = GoalCreateForm(request.POST, user=owner)
         if form.is_valid():
             cleaned_data = form.cleaned_data
             piece = cleaned_data['piece']

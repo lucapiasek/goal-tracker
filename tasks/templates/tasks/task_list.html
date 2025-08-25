@@ -4,14 +4,18 @@
     <a href="{% url 'tasks:create' owner.username %}"><button type="button">Nowe ćwiczenie</button></a>
 <table>
     {% for task in task_list %}
+        <tr>
         <td><a href="{% url 'tasks:detail' task.user.username task.pk %}">{{ task }}</a></td>
         <td><a href="{% url 'challenges:create_from_task' task.user.username task.pk %}"><button>Utwórz wyzwanie</button></a></td>
         <td><input type="checkbox" {% if task.is_summarized %}checked="checked" {% endif %}/> -podsumowanie|</td>
         {% if task.are_suggestions_enabled %}
                 <td>|<input type="checkbox" checked="{% if task.are_suggestions_enabled %}checked{% else %}{% endif %}" />sugestie ćwiczeń</td>
         {% endif %}
+        </tr>
     {% empty %}
+        <tr>
         <td>Tu pojawią się dodane przez Ciebie ćwiczenia.</td>
+        </tr>
     {% endfor %}
 </table>
 {% endblock %}
