@@ -7,9 +7,11 @@
      Czy sugestie ćwiczeń są włączone: <input type="checkbox" disabled checked="{% if task.are_suggestions_enabled %}checked{% else %}false{% endif %}" />
 <table>
     {% if task.was_practiced %}{% for practice in task.practice_set.all %}
-        <td><a href="{% url 'tasks:practice_update' task.user.username %}?next={% url 'tasks:detail' task.user.username task.pk %}">{{ practice }}</a></td>
-        <td><a href="{% url 'tasks:practice_delete' task.user.username %}"><button>Usuń ćwiczenie</button></a></td>
+        <tr>
+        <td><a href="{% url 'tasks:practice_update' task.user.username practice.pk  %}?next={% url 'tasks:detail' task.user.username task.pk %}">{{ practice }}</a></td>
+        <td><a href="{% url 'tasks:practice_delete' task.user.username practice.pk %}"><button>Usuń ćwiczenie</button></a></td>
         <td><input type="checkbox" {% if practice.is_summarized %}checked="checked" {% endif %}/> -podsumowanie|</td>
+        </tr>
     {% empty %}
 
     {% endfor %}{% endif %}

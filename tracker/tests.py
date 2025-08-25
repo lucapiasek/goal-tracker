@@ -15,7 +15,8 @@ def test_goal_list_view_with_no_goals(client):
     url = reverse('tracker:goal_list')
     response = client.get(url)
     assert response.status_code == 200
-    assertTemplateUsed(response, 'tracker/goal_list.html')
+    template_names = [t.name for t in response.templates if t.name is not None]
+    assert 'tracker/goal_list.html' in template_names
 
 @pytest.mark.django_db
 def test_goal_list_view_with_one_full_goal(client, goal):

@@ -111,7 +111,7 @@ class PracticeCreateView(UserPassesTestMixin, View):
         task = get_object_or_404(Task, pk=pk)
         form = PracticeForm(request.POST)
         practice = form.save(commit=False)
-        practice.task.pk = task.pk
+        practice.task = task
         form.save()
         return redirect('tasks:detail', username, task.pk)
 

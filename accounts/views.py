@@ -235,8 +235,8 @@ class AcceptTeacherInvitationView(View):
 class InvitationListView(View):
     def get(self, request):
         user = get_user(request)
-        teacher_invitations = user.student.teacher_invitations.all() if hasattr(user, 'student') else UserModel.objects.empty()
-        student_invitations = user.teacher.student_invitations.all() if hasattr(user, 'teacher') else UserModel.objects.empty()
+        teacher_invitations = user.student.teacher_invitations.all() if hasattr(user, 'student') else UserModel.objects.none()
+        student_invitations = user.teacher.student_invitations.all() if hasattr(user, 'teacher') else UserModel.objects.none()
         return render(
             request,
             'accounts/invitation_list.html',
