@@ -61,7 +61,7 @@ class GoalCreateView(UserPassesTestMixin, View):
             if pieces.exists():
                 goal.pieces.add(pieces)
 
-            return redirect('tracker:goal_list')
+            return redirect('tracker:goal_list', owner.username)
         return render(request, 'tracker/create_form.html', {'form': form, 'page_title': 'Dodaj cel', 'owner': owner})
 
 class GoalUpdateView(UserPassesTestMixin, View):
