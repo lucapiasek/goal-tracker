@@ -28,7 +28,7 @@ class ChallengeDetailView(UserPassesTestMixin, View):
     def get(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
         challenge = get_object_or_404(Challenge, pk=pk)
-        task = Challenge.objects.select_related("Task").get(challenge=challenge)
+        task = Task.objects.select_related('challenge')
         return render(request, 'challenges/challenge_detail.html', {'challenge': challenge, 'task': task, 'owner': owner})
 
 class ChallengeCreateView(UserPassesTestMixin, View):
