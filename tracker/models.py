@@ -94,7 +94,7 @@ class Task(models.Model):
     was_practiced = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.piece if self.piece else self.goal} {self.parts if self.parts else ''} {self.element if self.element else ''} {self.method if self.method else ''}"
+        return f"{self.piece if self.piece else self.goal} -- {self.element if self.element else ''} -- {self.method if self.method else ''}"
 
     def timedeltas(self):
         initial = [3, 4, 7, 28, 84]
