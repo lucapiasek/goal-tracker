@@ -11,7 +11,7 @@ UserModel = get_user_model()
 
 class YearView(UserPassesTestMixin, View):
     def test_func(self):
-        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get(self, request, username, year):
         owner = get_object_or_404(UserModel, username=username)
@@ -23,7 +23,7 @@ class YearView(UserPassesTestMixin, View):
 
 class DayView(UserPassesTestMixin, View):
     def test_func(self):
-        is_owner_or_is_teacher(self.request, self.kwargs['username'])
+        return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
     def get(self, request, username, year, month, day):
         owner = get_object_or_404(UserModel, username=username)
