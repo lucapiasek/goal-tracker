@@ -75,7 +75,7 @@ class TaskUpdateView(UserPassesTestMixin, View):
         task = get_object_or_404(Task, pk=pk)
         form = TaskForm(request.POST, user=owner, instance=task)
         task = form.save()
-        return redirect('tracker:goal_detail', username, pk)
+        return redirect('tasks:detail', username, pk)
 
 class TaskDeleteView(UserPassesTestMixin, View):
     def test_func(self):
