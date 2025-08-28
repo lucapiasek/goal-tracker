@@ -178,7 +178,7 @@ class AcceptStudentInvitationView(View):
         if hasattr(inviting_user, 'student') and hasattr(invited_user, 'teacher'):
             if invited_user.teacher.student_invitations.contains(inviting_user.student):
                 return render(request, 'accounts/confirmation_form.html', {
-                    'question': f"Czy chcesz potwierdzić zaproszenie od studenta {inviting.username}",
+                    'question': f"Czy chcesz potwierdzić zaproszenie od studenta {inviting_user.username}",
                     'owner': request.user
                 })
         raise Http404("Page not found.")
