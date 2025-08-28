@@ -56,7 +56,7 @@ class TaskCreateView(UserPassesTestMixin, View):
                 task.practice_set.add(practice)
                 task.was_practiced = True
                 task.save()
-            return redirect('tracker:piece_list', username)
+            return redirect('tasks:list', username)
         forms = [task_form, practice_form]
         return render(request, 'tasks/create_forms.html', {'forms': forms, 'owner': owner, 'page_title': 'Utwórz ćwiczenie'})
 
