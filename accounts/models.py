@@ -8,8 +8,8 @@ class Student(models.Model):
 
     def remove_invitations(self, teacher):
         self.invitations.remove(teacher)
-        if teacher.student_invitations.all().contains(self):
-            teacher.student_invitations.remove(self)
+        if teacher.invitations.all().contains(self):
+            teacher.invitations.remove(self)
         self.save()
 
     def __str__(self):
@@ -23,8 +23,8 @@ class Teacher(models.Model):
 
     def remove_invitations(self, student):
         self.invitations.remove(student)
-        if student.teacher_invitations.all().contains(self):
-            student.teacher_invitations.remove(self)
+        if student.invitations.all().contains(self):
+            student.invitations.remove(self)
         self.save()
 
     def __str__(self):
