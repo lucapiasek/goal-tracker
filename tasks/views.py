@@ -149,7 +149,6 @@ class PracticeDeleteView(UserPassesTestMixin, View):
         practice = get_object_or_404(Practice, pk=pk)
         return render(request, 'tasks/delete_form.html', {'object_to_delete': practice, 'owner':owner})
 
-
     def post(self, request, username, pk):
         if request.POST.get('operation') == 'Tak':
             practice = get_object_or_404(Practice, pk=pk)

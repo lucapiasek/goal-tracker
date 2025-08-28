@@ -15,7 +15,7 @@ class YearView(UserPassesTestMixin, View):
 
     def get(self, request, username, year):
         owner = get_object_or_404(UserModel, username=username)
-        goals = goals=Goal.objects.filter(user=owner)
+        goals = Goal.objects.filter(user=owner)
         practice=Practice.objects.filter(task__user=owner) if request.user == owner else Practice.objects.none()
         c = MyHTMLCalendar(goals=goals, practice=practice)
         html_calendar = c.formatyear(year)
