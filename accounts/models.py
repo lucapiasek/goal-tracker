@@ -9,7 +9,7 @@ class Student(models.Model):
     def remove_invitations(self, teacher):
         self.invitations.remove(teacher)
         if teacher.student_invitations.all().contains(self):
-            teacher.student_invitation.remove(self)
+            teacher.student_invitations.remove(self)
         self.save()
 
     def __str__(self):
@@ -24,7 +24,7 @@ class Teacher(models.Model):
     def remove_invitations(self, student):
         self.invitations.remove(student)
         if student.teacher_invitations.all().contains(self):
-            student.teacher_invitation.remove(self)
+            student.teacher_invitations.remove(self)
         self.save()
 
     def __str__(self):
