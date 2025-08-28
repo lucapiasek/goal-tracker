@@ -22,13 +22,16 @@ class InvitationForm(forms.Form):
         if invitation_type not in permitted_invitation_types:
             raise ValidationError('Form tampered. Please do not do this.')
 
+        if invited_username.lower() == inviting_username.lower():
+            raise ValidationError('Podany username jest nieprawidłowy.')
+
         try:
             invited_user = UserModel.objects.get(username=invited_username)
             inviting_user = UserModel.objects.get(username=inviting_username)
             if hasattr(inviting_user, invitation_type):
                 removed_from_dict = permitted_invitation_types.pop(invitation_type)
                 if hasattr(invited_user, [value for value in permitted_invitation_types.values()][0]):
-                    error = ValidationError('Użytkownik już został zaproszony')
+                    error = ValidationError('Użytkownik już został zaproszony.')
                     if invitation_type == 'student':
                         if invited_user.teacher.student_invitations.all().contains(inviting_user.student):
                             raise error
@@ -36,5 +39,5 @@ class InvitationForm(forms.Form):
                         if invited_user.student.teacher_invitations.all().contains(inviting_user.teacher):
                             raise error
         except UserModel.DoesNotExist:
-            error = ValidationError("Podany użytkownik nie istnieje")
+            error = ValidationError("Podany użytkownik nie istnieje.")
             self.add_error("invited", error)

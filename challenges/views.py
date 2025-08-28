@@ -48,7 +48,7 @@ class ChallengeCreateView(UserPassesTestMixin, View):
         task.user = owner
         task.save()
         challenge = challenge_form.save(commit=False)
-        challenge.task.pk = task.pk
+        challenge.task = task
         challenge.user = owner
         challenge.save()
         task.challenge = challenge
