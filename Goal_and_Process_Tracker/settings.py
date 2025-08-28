@@ -34,18 +34,26 @@ ALLOWED_HOSTS = []
 EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
 
 DATE_INPUT_FORMATS = [
-        "%d.%m.%Y",
-        "%d.%m.%y",
-        "%d/%m/%Y",
-        "%d/%m/%y",
-        "%d-%m-%Y",
-        "%d-%m-%y",
-        "%d %m %Y",
-        "%d %m %y",
-        "%Y/%m/%d",
-        "%Y.%m.%d",
-        "%Y-%m-%d"
-    ]
+    "%d.%m.%Y",
+    "%d.%m.%y",
+    "%d/%m/%Y",
+    "%d/%m/%y",
+    "%d-%m-%Y",
+    "%d-%m-%y",
+    "%d %m %Y",
+    "%d %m %y",
+    "%Y/%m/%d",
+    "%Y.%m.%d",
+    "%Y-%m-%d"
+]
+
+TIME_INPUT_FORMATS = [
+    "%H:%M:%S",
+    "%H:%M:%S.%f",
+    "%H:%M",
+    "%H.%M",
+    "%H.%M.%S"
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
