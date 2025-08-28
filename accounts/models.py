@@ -10,7 +10,6 @@ class Student(models.Model):
         self.invitations.remove(teacher)
         if teacher.invitations.all().contains(self):
             teacher.invitations.remove(self)
-        self.save()
 
     def __str__(self):
         return self.user.username
@@ -25,7 +24,6 @@ class Teacher(models.Model):
         self.invitations.remove(student)
         if student.invitations.all().contains(self):
             student.invitations.remove(self)
-        self.save()
 
     def __str__(self):
         return self.user.username
