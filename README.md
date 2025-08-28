@@ -1,5 +1,5 @@
 # About
-Django project for organizing working on goals and pieces for musicians.
+Django project for organizing work on goals and pieces for musicians.
 
 ###Features:
 registration,
