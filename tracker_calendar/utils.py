@@ -14,7 +14,7 @@ class MyHTMLCalendar(calendar.LocaleHTMLCalendar):
     def add_tasks(self, y, m, d):
         datetime.date(year=y, month=m, day=d)
         goals_filtered = self.goals.filter(date=datetime.date(year=y, month=m, day=d))
-        practices_filtered=self.practice.filter(date=datetime.date(year=y, month=m, day=d))
+        practices_filtered = self.practice.filter(date=datetime.date(year=y, month=m, day=d))
         result = ''
         for goal in goals_filtered.iterator():
             result += goal.__str__()
