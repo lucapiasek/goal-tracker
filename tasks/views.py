@@ -113,6 +113,8 @@ class PracticeCreateView(UserPassesTestMixin, View):
         practice = form.save(commit=False)
         practice.task = task
         form.save()
+        task.was_practiced = True
+        task.save()
         return redirect('tasks:detail', username, task.pk)
 
 class PracticeUpdateView(UserPassesTestMixin, View):
