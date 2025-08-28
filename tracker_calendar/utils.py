@@ -16,10 +16,10 @@ class MyHTMLCalendar(calendar.LocaleHTMLCalendar):
         goals_filtered = self.goals.filter(date=datetime.date(year=y, month=m, day=d))
         practices_filtered = self.practice.filter(date=datetime.date(year=y, month=m, day=d))
         result = ''
-        for goal in goals_filtered.iterator():
-            result += goal.__str__()
-        for practice in practices_filtered.iterator():
-            result += practice.__str__()
+        for goal in goals_filtered:
+            result += str(goal)
+        for practice in practices_filtered:
+            result += str(practice)
         return result
 
     @staticmethod
