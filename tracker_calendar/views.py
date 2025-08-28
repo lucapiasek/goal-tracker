@@ -27,7 +27,7 @@ class DayView(UserPassesTestMixin, View):
 
     def get(self, request, username, year, month, day):
         owner = get_object_or_404(UserModel, username=username)
-        date = parse_date(f"{day}.{month}.{year}")
+        date = parse_date("%s.%s.%s" % (day, month, year))
         goal_list = Goal.objects.filter(user=owner).filter(date=date)
         if request.user == owner:
             practice_list = Practice.objects.filter(task__user=owner).filter(date=date)
@@ -37,7 +37,7 @@ class DayView(UserPassesTestMixin, View):
             request,
             'tracker_calendar/day_view.html',
             {
-                'date': date,
+                'date': "%s.%s.%s" % (day, month, year),
                 'goal_list': goal_list,
                 'practice_list': practice_list,
                 'owner': owner
