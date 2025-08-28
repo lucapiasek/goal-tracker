@@ -10,5 +10,5 @@ urlpatterns = [
     path('<str:username>/tasks/<int:pk>/delete', views.TaskDeleteView.as_view(), name='delete'),
     path('<str:username>/tasks/<int:pk>/practice', views.PracticeCreateView.as_view(), name='practice_create'),
     path('<str:username>/practice/<int:pk>', views.PracticeUpdateView.as_view(), name='practice_update'),
-    path('<str:username>/practice/<int:pk>', views.PracticeDeleteView.as_view(), name='practice_delete'),
+    path('<str:username>/practice/<int:pk>/delete', views.PracticeDeleteView.as_view(), name='practice_delete'),
 ]
