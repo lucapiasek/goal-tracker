@@ -154,6 +154,7 @@ class PracticeDeleteView(UserPassesTestMixin, View):
     def post(self, request, username, pk):
         if request.POST.get('operation') == 'Tak':
             practice = get_object_or_404(Practice, pk=pk)
+            task_pk = practice.task.pk
             practice.delete()
-        return redirect('tasks:list', username)
+        return redirect('tasks:detail', username, task_pk)
 
