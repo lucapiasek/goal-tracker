@@ -6,10 +6,10 @@ mdays = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 
 class MyHTMLCalendar(calendar.LocaleHTMLCalendar):
-    def __init__(self, goals=Goal.objects.none(), practice=Practice.objects.none()):
+    def __init__(self, goals=None, practice=None):
         super().__init__()
-        self.goals = goals
-        self.practice = practice
+        self.goals = goals or Goal.objects.none()
+        self.practice = practice or Practice.objects.none()
 
     def add_tasks(self, y, m, d):
         datetime.date(year=y, month=m, day=d)
