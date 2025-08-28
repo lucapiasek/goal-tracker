@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Ćwiczenie</h2>
-    <h2>{{ task }}</h2><a href="{% url 'tasks:create' task.user.username %}"><button type="button">Zaktualizuj ćwiczenie</button></a>
+    <h2>{{ task }}</h2><a href="{% url 'tasks:update' task.user.username %}"><button type="button">Zaktualizuj ćwiczenie</button></a>
     <a href="{% url 'challenges:create_from_task' task.user.username task.pk %}"><button>Utwórz wyzwanie z zadania</button></a>
     <a href="{% url 'tasks:delete' task.user.username task.pk %}"><button>Usuń</button></a>
      Czy sugestie ćwiczeń są włączone: <input type="checkbox" disabled checked="{% if task.are_suggestions_enabled %}checked{% else %}false{% endif %}" />
