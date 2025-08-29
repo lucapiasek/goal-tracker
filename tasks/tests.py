@@ -23,9 +23,9 @@ def piece(user):
     return UserModel.objects.create(user=user, name_to_display=Faker("name"))
 
 @pytest.fixture
-def task_with_goal(user, goal):
+def goal_task(user, goal):
     return Task.objects.create(user=user, goal=goal)
 
 @pytest.fixture
-def task_with_piece(user, piece):
+def piece_task(user, piece):
     return Task.objects.create(user=user, piece=piece)
