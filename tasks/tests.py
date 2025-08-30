@@ -45,3 +45,13 @@ def test_task_list_view_provides_user_tasks_only(client, user, logged, user2, go
     assert response.status_code == 200
     assert goal_task in response.context['task_list']
     assert other_user_task not in response.context['task_list']
+
+@pytest.mark.django_db
+def test_task_list_view_is_forbidden_for_other_user(client, user, user2, goal_task):
+    """
+    User's task list view is forbidden for other users
+    """
+    client.force_login(user2)
+    url = reverse('tasks:list', args=[user.username])
+    response = client.get(url)
+    assert response.status_code == 403
