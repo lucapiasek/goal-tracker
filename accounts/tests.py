@@ -22,8 +22,8 @@ def test_user_detail_view_has_visible_username(client, user):
 def test_user_detail_view_is_visible_for_his_teacher(client, user2, student):
     teacher = Teacher.objects.create(user=user2)
     teacher.students.add(student)
-    client.force_login(teacher)
-    url = reverse('accounts:user_detail', args=[user.username])
+    client.force_login(user2)
+    url = reverse('accounts:user_detail', args=[student.user.username])
     response = client.get(url)
     assert response.status_code == 200
-    assert user.username in response.content.decode('utf-8')
+    assert student.user.username in response.content.decode('utf-8')
