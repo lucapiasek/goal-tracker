@@ -16,11 +16,11 @@ def user2():
 
 @pytest.fixture
 def goal(user):
-    return UserModel.objects.create(user=user, name=Faker("sentence"))
+    return Goal.objects.create(user=user, name=Faker("sentence"))
 
 @pytest.fixture
 def piece(user):
-    return UserModel.objects.create(user=user, name_to_display=Faker("name"))
+    return Piece.objects.create(user=user, name_to_display=Faker("name"))
 
 @pytest.fixture
 def goal_task(user, goal):
