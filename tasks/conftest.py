@@ -8,11 +8,11 @@ UserModel = get_user_model()
 
 @pytest.fixture
 def client():
-    return Client
+    return Client()
 
 @pytest.fixture
 def user():
-    return UserModel.objects.create_user(username="test2", password="password")
+    return UserModel.objects.create_user(username="test", password="password")
 
 @pytest.fixture
 def user2():
