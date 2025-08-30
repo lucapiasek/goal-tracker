@@ -15,6 +15,10 @@ def user():
     return UserModel.objects.create_user(username="test", password="password")
 
 @pytest.fixture
+def logged(client, user):
+    client.force_login(user)
+
+@pytest.fixture
 def user2():
     return UserModel.objects.create_user(username="test2", password="password")
 
