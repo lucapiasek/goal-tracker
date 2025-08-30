@@ -29,3 +29,11 @@ def goal_task(user, goal):
 @pytest.fixture
 def piece_task(user, piece):
     return Task.objects.create(user=user, piece=piece)
+
+@pytest.fixture
+def goal_task_practice(user, goal_task):
+    return Practice.objects.create(task=goal_task)
+
+@pytest.fixture
+def piece_task_practice(user, piece_task):
+    return Practice.objects.create(task=piece_task)
