@@ -1,6 +1,8 @@
 import pytest
 from django.urls import reverse
 from tracker.models import Goal, Task
+from accounts.models import Teacher, Student
+
 
 @pytest.mark.django_db
 def test_task_list_view(client, user, logged):
@@ -55,3 +57,17 @@ def test_task_list_view_is_forbidden_for_other_user(client, user, user2, goal_ta
     url = reverse('tasks:list', args=[user.username])
     response = client.get(url)
     assert response.status_code == 403
+
+@pytest.mark.django_db
+def test_task_list_view_is_allowed_for_teacher(client, user, user2, goal_task):
+    """
+    User's task list view provides user's tasks for their teacher
+    """
+    teacher, created = Teacher.objects.get_or_create(user=user2)
+    student, create = Student.objects.get_or_create(user=user)
+    teacher.students.add(student)
+    client.force_login(teacher.user)
+    url = reverse('tasks:list', args=[student.user.username])
+    response = client.get(url)
+    assert response.status_code == 200
+    assert goal_task in response.context['task_list']
