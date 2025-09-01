@@ -2,6 +2,7 @@ from django.test import Client
 from .models import Teacher
 import pytest
 from django.shortcuts import reverse
+from .forms import InvitationForm
 
 @pytest.mark.django_db
 def test_login_view_post(user):
@@ -27,3 +28,14 @@ def test_user_detail_view_is_visible_for_his_teacher(client, user2, student):
     response = client.get(url)
     assert response.status_code == 200
     assert student.user.username in response.content.decode('utf-8')
+
+@pytest.mark.django_db
+def test_student_invite_view_get(client, user, logged):
+    """
+    Student invite view get method returns invitation form and proper template.
+    """
+    url = reverse("accounts:invite_teacher")
+    response = client.get(url)
+    assert response.status_code == 200
+    form = response.context['form']
+    assert isinstance(form, InvitationForm)
