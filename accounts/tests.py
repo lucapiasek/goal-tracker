@@ -41,12 +41,26 @@ def test_student_invite_view_get(client, user, logged):
     assert isinstance(form, InvitationForm)
 
 @pytest.mark.django_db
-def test_student_invite_view_post(client, user, logged, user2):
+def test_student_invite_view_post(client, user, logged, student, teacher):
     """
-    Student invite view post method:
-    creates teacher profile for invited user,
+    Student invite view adds teacher profile to students' invitations.
+    """
+    url = reverse('accounts:invite_teacher')
+    data = {
+        'inviting': student.user.username,
+        'invited': teacher.user.username,
+        'invitation_type': 'student'
+    }
+    response = client.post(url, data)
+    assert student.invitations.all().contains(teacher)
+
+@pytest.mark.django_db
+def test_student_invite_view_post_creates_profiles(client, user, logged, user2):
+    """
+    Student invite view post method creates profiles if they don't exist:
+    teacher profile for invited user,
     student profile for inviting user,
-    then adds teacher profile to students' invitations
+    then adds teacher to student invitations.
     """
     data = {
         'inviting': user.username,
@@ -57,4 +71,5 @@ def test_student_invite_view_post(client, user, logged, user2):
     response = client.post(url, data)
     assert Student.objects.get(user=user)
     assert Teacher.objects.get(user=user2)
-    assert user.student.invitations.all().contains(user2.teacher)
+    student = Student.objects.get(user=user)
+    assert student.invitations.all().contains(user2.teacher)
