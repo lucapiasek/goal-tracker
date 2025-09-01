@@ -155,7 +155,7 @@ class TeacherInviteView(View):
             invited_user = UserModel.objects.get(username=invited_username)
             invited_student, created = Student.objects.get_or_create(user=invited_user)
             inviting_user = get_user(request)
-            inviting_teacher, created = Teacher.ojbects.get_or_create(user=inviting_user)
+            inviting_teacher, created = Teacher.objects.get_or_create(user=inviting_user)
             inviting_teacher.invitations.add(invited_student)
             return render(request, 'accounts/success.html', {
                 'page_title': 'Zaproś nauczyciela',
