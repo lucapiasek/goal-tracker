@@ -12,7 +12,6 @@ from .forms import InvitationForm
 from .models import Teacher, Student
 from django.forms import modelform_factory
 from .permissions import is_owner_or_is_teacher, is_owner
-from .utils import if_not_teacher_create, if_not_student_create
 
 UserModel = get_user_model()
 
