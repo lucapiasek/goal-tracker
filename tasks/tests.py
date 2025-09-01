@@ -82,3 +82,12 @@ def test_task_detail_view(client, goal_task, user, logged):
     assert response.status_code == 200
     template_names = [t.name for t in response.templates if t.name is not None]
     assert 'tasks/task_detail.html' in template_names
+
+@pytest.mark.django_db
+def test_task_detail_view_with_non_existent_goal(client, user, logged):
+    """
+    Task detail view return 404 when requested goal doesn't exist.
+    """
+    url = reverse('tasks:detail', args=[user.username, 1])
+    response = client.get(url)
+    assert response.status_code == 404
