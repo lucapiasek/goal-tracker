@@ -19,6 +19,10 @@ def client():
     return Client()
 
 @pytest.fixture
+def logged(client, user):
+    client.force_login(user)
+
+@pytest.fixture
 def student(user):
     return Student.objects.create(user=user)
 
