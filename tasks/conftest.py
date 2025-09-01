@@ -40,8 +40,12 @@ def piece_task(user, piece):
 
 @pytest.fixture
 def goal_task_practice(user, goal_task):
-    return Practice.objects.create(task=goal_task)
+    goal_task.was_practiced = True
+    goal_task.save()
+    return Practice.objects.create(task=goal_task, date='2025-08-12')
 
 @pytest.fixture
 def piece_task_practice(user, piece_task):
-    return Practice.objects.create(task=piece_task)
+    goal_task.was_practiced = True
+    goal_task.save()
+    return Practice.objects.create(task=piece_task, date='2025-08-12')
