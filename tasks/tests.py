@@ -7,7 +7,7 @@ from accounts.models import Teacher, Student
 @pytest.mark.django_db
 def test_task_list_view(client, user, logged):
     """
-    Task list view exist and provides correct template.
+    Task list view exists and provides correct template.
     """
     url = reverse('tasks:list', args=[user.username])
     response = client.get(url)
