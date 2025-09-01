@@ -75,11 +75,12 @@ def test_task_list_view_is_allowed_for_teacher(client, user, user2, goal_task):
 @pytest.mark.django_db
 def test_task_detail_view(client, goal_task, user, logged):
     """
-    Task detail view provides correct template.
+    Task detail view provides correct template and users' task.
     """
     url = reverse('tasks:detail', args=[user.username, goal_task.pk])
     response = client.get(url)
     assert response.status_code == 200
+    assert goal_task == response.context['task']
     template_names = [t.name for t in response.templates if t.name is not None]
     assert 'tasks/task_detail.html' in template_names
 
