@@ -1,5 +1,5 @@
 from django.test import Client
-from .models import Teacher
+from .models import Teacher, Student
 import pytest
 from django.shortcuts import reverse
 from .forms import InvitationForm
@@ -39,3 +39,22 @@ def test_student_invite_view_get(client, user, logged):
     assert response.status_code == 200
     form = response.context['form']
     assert isinstance(form, InvitationForm)
+
+@pytest.mark.django_db
+def test_student_invite_view_post(client, user, logged, user2):
+    """
+    Student invite view post method:
+    creates teacher profile for invited user,
+    student profile for inviting user,
+    then adds teacher profile to students' invitations
+    """
+    data = {
+        'inviting': user.username,
+        'invited': user2.username,
+        'invitation_type': 'student',
+    }
+    url = reverse("accounts:invite_teacher")
+    response = client.post(url, data)
+    assert Student.objects.get(user=user)
+    assert Teacher.objects.get(user=user2)
+    assert user.student.invitations.all().contains(user2.teacher)
