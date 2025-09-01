@@ -153,11 +153,10 @@ class TeacherInviteView(View):
         if form.is_valid():
             invited_username = form.cleaned_data.get('invited')
             invited_user = UserModel.objects.get(username=invited_username)
-            if_not_student_create(invited_user)
+            invited_student, created = Student.objects.get_or_create(user=invited_user)
             inviting_user = get_user(request)
-            if_not_teacher_create(inviting_user)
-            invited_user.student.teacher_invitations.add(inviting_user.teacher)
-            invited_user.save()
+            inviting_teacher, created = Teacher.ojbects.get_or_create(user=inviting_user)
+            inviting_teacher.invitations.add(invited_student)
             return render(request, 'accounts/success.html', {
                 'page_title': 'Zaproś nauczyciela',
                 'success_message': "Student został zaproszony.",
