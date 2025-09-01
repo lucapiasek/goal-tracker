@@ -73,3 +73,18 @@ def test_student_invite_view_post_creates_profiles(client, user, logged, user2):
     assert Teacher.objects.get(user=user2)
     student = Student.objects.get(user=user)
     assert student.invitations.all().contains(user2.teacher)
+
+@pytest.mark.django_db
+def test_teacher_invite_view_post(client, user, user2, student, teacher):
+    """
+    Teacher invite view adds student profile to teacher invitations.
+    """
+    client.force_login(user2)
+    data = {
+        'inviting': user2.username,
+        'invited': user.username,
+        'invitation_type': 'teacher'
+    }
+    url = reverse('accounts:invite_student')
+    client.post(url, data)
+    assert teacher.invitations.all().contains(student)
