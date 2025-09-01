@@ -1,7 +1,7 @@
 import pytest
 from django.test import Client
 from django.contrib.auth import get_user_model
-from tracker.models import Task, Practice, Goal, Piece
+from tracker.models import Task, Practice, Goal, Piece, Challenge
 from factory import Faker
 
 UserModel = get_user_model()
@@ -37,3 +37,7 @@ def goal_task(user, goal):
 @pytest.fixture
 def piece_task(user, piece):
     return Task.objects.create(user=user, piece=piece)
+
+@pytest.fixture
+def goal_task_challenge(user, goal_task):
+    return Challenge.objects.create(user=user, task=goal_task)
