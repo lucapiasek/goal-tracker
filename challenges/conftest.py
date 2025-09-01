@@ -41,3 +41,7 @@ def piece_task(user, piece):
 @pytest.fixture
 def goal_task_challenge(user, goal_task):
     return Challenge.objects.create(user=user, task=goal_task)
+
+@pytest.fixture
+def piece_task_challenge(user, piece_task):
+    return Challenge.objects.create(user=user, task=piece_task)
