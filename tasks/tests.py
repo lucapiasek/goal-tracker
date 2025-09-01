@@ -1,6 +1,6 @@
 import pytest
 from django.urls import reverse
-from tracker.models import Goal, Task
+from tracker.models import Goal, Task, Practice
 from accounts.models import Teacher, Student
 
 
@@ -91,3 +91,15 @@ def test_task_detail_view_with_non_existent_goal(client, user, logged):
     url = reverse('tasks:detail', args=[user.username, 1])
     response = client.get(url)
     assert response.status_code == 404
+
+@pytest.mark.django_db
+def test_task_detail_view_with_practice_set(client, user, logged, goal_task, goal_task_practice):
+    """
+    Task detail view provides all practice instances of task.
+    """
+    goal_task_practice_2 = Practice.objects.create(task=goal_task, date='2025-09-12')
+    url = reverse('tasks:detail', args=[user.username, goal_task.pk])
+    response = client.get(url)
+    assert response.status_code == 200
+    assert str(goal_task_practice) in response.content.decode('utf-8')
+    assert str(goal_task_practice_2) in response.content.decode('utf-8')
