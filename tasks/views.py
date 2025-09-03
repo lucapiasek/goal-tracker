@@ -27,22 +27,22 @@ class TaskDetailView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner(self.request.user, self.kwargs['username'])
 
-    def get(self, request, username, pk):
-        owner = get_object_or_404(UserModel, username=username)
-        task = get_object_or_404(Task, pk=pk)
+    def get(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
+        task = get_object_or_404(Task, pk=kwargs['pk'])
         return render(request, 'tasks/task_detail.html', {'task': task, 'owner': owner})
 
 class TaskCreateView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
-    def get(self, request, username):
-        owner = get_object_or_404(UserModel, username=username)
+    def get(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
         forms = [TaskForm(user=owner), PracticeForm()]
         return render(request, 'tasks/create_forms.html', {'forms': forms, 'owner': owner, 'page_title': 'Utwórz ćwiczenie'})
 
-    def post(self, request, username):
-        owner = get_object_or_404(UserModel, username=username)
+    def post(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
         task_form = TaskForm(request.POST, user=owner)
         practice_form = PracticeForm(request.POST)
         if task_form.is_valid():
@@ -56,7 +56,7 @@ class TaskCreateView(UserPassesTestMixin, View):
                 task.practice_set.add(practice)
                 task.was_practiced = True
                 task.save()
-            return redirect('tasks:list', username)
+            return redirect('tasks:list', kwargs['username'])
         forms = [task_form, practice_form]
         return render(request, 'tasks/create_forms.html', {'forms': forms, 'owner': owner, 'page_title': 'Utwórz ćwiczenie'})
 
@@ -64,33 +64,33 @@ class TaskUpdateView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
-    def get(self, request, username, pk):
-        owner = get_object_or_404(UserModel, username=username)
-        task = get_object_or_404(Task, pk=pk)
+    def get(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
+        task = get_object_or_404(Task, pk=kwargs['pk'])
         form = TaskForm(instance=task, user=owner)
         return render(request, 'tasks/create_form.html', {'form': form, 'page_title': 'Zaktualizuj zadanie', 'owner': owner})
 
-    def post (self, request, username, pk):
-        owner = get_object_or_404(UserModel, username=username)
-        task = get_object_or_404(Task, pk=pk)
+    def post (self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
+        task = get_object_or_404(Task, pk=kwargs['pk'])
         form = TaskForm(request.POST, user=owner, instance=task)
         task = form.save()
-        return redirect('tasks:detail', username, pk)
+        return redirect('tasks:detail', kwargs['username'], kwargs['pk'])
 
 class TaskDeleteView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
-    def get(self, request, username, pk):
-        owner = get_object_or_404(UserModel, username=username)
-        task = get_object_or_404(Task, pk=pk)
+    def get(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
+        task = get_object_or_404(Task, pk=kwargs['pk'])
         return render(request, 'tasks/delete_form.html', {'object_to_delete': task, 'owner':owner})
 
-    def post(self, request, username, pk):
+    def post(self, request, *args, **kwargs):
         if request.POST.get('operation') == 'Tak':
-            task = get_object_or_404(Task, pk=pk)
+            task = get_object_or_404(Task, pk=kwargs['pk'])
             task.delete()
-        return redirect('tasks:list', username)
+        return redirect('tasks:list', kwargs['username'])
 
 class PracticeCreateView(UserPassesTestMixin, View):
     def test_func(self):
