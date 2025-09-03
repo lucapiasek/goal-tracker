@@ -133,3 +133,14 @@ def test_task_create_view_post(client, user, logged, goal):
     assert Task.objects.get(user=user, goal=goal)
     task = Task.objects.get(user=user, goal=goal)
     assert Practice.objects.get(task=task, date='2025-09-12')
+
+@pytest.mark.django_db
+def test_task_delete_view_get(client, user, logged, goal_task):
+    """
+    Task goal view provides correct template.
+    """
+    url = reverse('tasks:delete', args=[user.username, goal_task.pk])
+    response = client.get(url)
+    assert response.status_code == 200
+    template_names = [t.name for t in response.templates if t.name is not None]
+    assert 'tasks/delete_form.html' in template_names
