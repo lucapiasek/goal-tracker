@@ -116,3 +116,20 @@ def test_task_create_view_get(client, user, logged):
     assert response.status_code == 200;
     for form in response.context['forms']:
         assert isinstance(form, TaskForm) or isinstance(form, PracticeForm)
+
+@pytest.mark.django_db
+def test_task_create_view_post(client, user, logged, goal):
+    """
+    Task create view creates task and related to it practice.
+    """
+    url = reverse('tasks:create', args=[user.username])
+    data = {
+        'user': user,
+        'goal': goal.id,
+        'date': '12.09.2025'
+    }
+    response = client.post(url, data)
+    assert response.status_code == 302
+    assert Task.objects.get(user=user, goal=goal)
+    task = Task.objects.get(user=user, goal=goal)
+    assert Practice.objects.get(task=task, date='2025-09-12')
