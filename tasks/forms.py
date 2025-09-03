@@ -25,7 +25,7 @@ class TaskForm(forms.ModelForm):
         if not goal and not piece:
             err = ValidationError("Conajmniej jedno z tych pól musi być wypełnione")
             self.add_error("goal", err)
-            self.add_error("pieces", err)
+            self.add_error("piece", err)
 
 class PracticeForm(forms.ModelForm):
     date = forms.DateField(required=True)
