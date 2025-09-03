@@ -137,7 +137,7 @@ def test_task_create_view_post(client, user, logged, goal):
 @pytest.mark.django_db
 def test_task_delete_view_get(client, user, logged, goal_task):
     """
-    Task goal view provides correct template.
+    Task delete view provides correct template.
     """
     url = reverse('tasks:delete', args=[user.username, goal_task.pk])
     response = client.get(url)
@@ -148,10 +148,20 @@ def test_task_delete_view_get(client, user, logged, goal_task):
 @pytest.mark.django_db
 def test_task_delete_view_post(client, user, logged, goal_task):
     """
-    Task goal view removes task from database.
+    Task delete view removes task from database.
     """
     url = reverse('tasks:delete', args=[user.username, goal_task.pk])
     data = {'operation': 'Tak'}
     response = client.post(url, data)
     assert response.status_code == 302
     assert not Task.objects.all().contains(goal_task)
+
+@pytest.mark.django_db
+def test_task_delete_view_post_removes_practices(client, user, logged, goal_task, goal_task_practice):
+    """
+    Task delete view removes practice set related to task.
+    """
+    url = reverse('tasks:delete', args=[user.username, goal_task.pk])
+    data = {'operation': 'Tak'}
+    response = client.post(url, data)
+    assert not Practice.objects.all().contains(goal_task_practice)
