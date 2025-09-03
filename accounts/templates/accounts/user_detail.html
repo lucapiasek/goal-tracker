@@ -26,7 +26,7 @@
     {% if is_teacher %}
     <h2>Studenci:</h2>
     {% for student in owner.teacher.students.all %}
-        <p><a href="{% url 'accounts:user_detail' student.user.id %}">{{ student.user.first_name }} {{ student.user.last_name }} | {{ student.user.username }}</a></p>
+        <p><a href="{% url 'accounts:user_detail' student.user.username %}">{{ student.user.first_name }} {{ student.user.last_name }} | {{ student.user.username }}</a></p>
     {% empty %}
     {% endfor %}
     {% endif %}
@@ -34,7 +34,7 @@
 
     {% if is_student %}<h2>Nauczyciele:</h2>
     {% for teacher in owner.student.teachers.all %}
-        <p><a href="{% url 'accounts:user_detail' teacher.user.id %}">{{ teacher.user.last_name }} {{ teacher.user.last_name }} | {{ teacher.user.username }}</a></p>
+        <p><a href="{% url 'accounts:user_detail' teacher.user.username %}">{{ teacher.user.last_name }} {{ teacher.user.last_name }} | {{ teacher.user.username }}</a></p>
     {% empty %}
     {% endfor %}
     {% endif %}
