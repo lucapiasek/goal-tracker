@@ -2,6 +2,7 @@ import pytest
 from django.test import Client
 from django.contrib.auth import get_user_model
 from tracker.models import Task, Practice, Goal, Piece
+from accounts.models import Teacher, Student
 from factory import Faker
 
 UserModel = get_user_model()
@@ -49,3 +50,15 @@ def piece_task_practice(user, piece_task):
     piece_task.was_practiced = True
     piece_task.save()
     return Practice.objects.create(task=piece_task, date='2025-08-12')
+
+@pytest.fixture
+def student(user):
+    return Student.objects.create(user=user)
+
+@pytest.fixture
+def teacher(user2):
+    return Teacher.objects.create(user=user2)
+
+@pytest.fixture
+def teacher_has_student(teacher, student):
+    teacher.students.add(student)
