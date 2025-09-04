@@ -242,3 +242,14 @@ def test_practice_update_view_post(client, user, logged, goal_task, goal_task_pr
     response = client.post(url, data)
     assert response.status_code == 302
     assert Practice.objects.get(pk=goal_task_practice.pk, **data)
+
+@pytest.mark.django_db
+def test_practice_update_view_returns_404_with_non_existent_practice(client, user, logged, goal_task, goal_task_practice):
+    """
+    Practice update view return 404 when practice doesn't exist.
+    """
+    url = reverse('tasks:practice_update', args=[user.username, goal_task_practice.pk])
+    response = client.get(url)
+    assert response.status_code == 404
+    response = client.post(url)
+    assert response.status_code == 404
