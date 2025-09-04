@@ -248,7 +248,7 @@ def test_practice_update_view_returns_404_with_non_existent_practice(client, use
     """
     Practice update view return 404 when practice doesn't exist.
     """
-    url = reverse('tasks:practice_update', args=[user.username, goal_task_practice.pk])
+    url = reverse('tasks:practice_update', args=[user.username, goal_task_practice.pk + 1])
     response = client.get(url)
     assert response.status_code == 404
     response = client.post(url)
