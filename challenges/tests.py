@@ -2,6 +2,7 @@ import pytest
 from django.urls import reverse
 from tasks.forms import TaskForm
 from .forms import ChallengeForm
+from tracker.models import Task, Challenge
 
 @pytest.mark.django_db
 def test_challenge_list_view(client, user, logged):
@@ -65,3 +66,21 @@ def test_challenge_create_view_get(client, user, logged):
     assert response.status_code == 200
     for form in response.context['forms']:
         assert isinstance(form, TaskForm) or isinstance(form, ChallengeForm)
+
+@pytest.mark.django_db
+def test_challenge_create_view_post(client, user, logged, goal):
+    """
+    Challenge create view creates task and related to it challenge.
+    """
+    url = reverse('challenges:create', args=[user.username])
+    data = {
+        'goal': goal.id,
+        'minimum_number_of_days': 0,
+        'minimum_number_of_repetitions': 0,
+        'minimum_total_repetitions': 0
+    }
+    response = client.post(url, data)
+    assert response.status_code == 302
+    assert Task.objects.get(user=user, goal=goal)
+    task = Task.objects.get(user=user, goal=goal)
+    assert Challenge.objects.get(task=task)
