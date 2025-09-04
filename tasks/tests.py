@@ -218,3 +218,12 @@ def test_practice_create_view_is_forbidden_for_teacher(client, user, student, us
     assert response.status_code == 403
     response = client.post(url)
     assert response.status_code == 403
+
+@pytest.mark.django_db
+def test_practice_update_view_get(client, user, logged, goal_task, goal_task_practice):
+    """
+    Practice update view get method return form with correct practice.
+    """
+    url = reverse('tasks:practice_update', args=[user.username, goal_task_practice.pk])
+    response = client.get(url)
+    assert response.context['form'].instance == goal_task_practice
