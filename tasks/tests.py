@@ -206,3 +206,15 @@ def test_practice_create_view_post_returns_404_with_non_existent_task(client, us
     url = reverse('tasks:practice_create', args=[user.username, goal_task.pk + 1])
     response = client.post(url)
     assert response.status_code == 404
+
+@pytest.mark.django_db
+def test_practice_create_view_is_forbidden_for_teacher(client, user, student, user2, teacher, teacher_has_student, goal_task):
+    """
+    Practice create view get method returns 403 for users' teacher.
+    """
+    client.force_login(user2)
+    url = reverse('tasks:practice_create', args=[user.username, goal_task.pk])
+    response = client.get(url)
+    assert response.status_code == 403
+    response = client.post(url)
+    assert response.status_code == 403
