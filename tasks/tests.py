@@ -188,3 +188,12 @@ def test_practice_create_view_post(client, user, logged, goal_task):
     response = client.post(url, data)
     assert response.status_code == 302
     assert Practice.objects.get(task=goal_task.pk, **data)
+
+@pytest.mark.django_db
+def test_practice_create_view_get_returns_404_with_non_existent_task(client, user, logged, goal_task):
+    """
+    Practice create view get method returns 404 when task doesn't exist.
+    """
+    url = reverse('tasks:practice_create', args=[user.username, goal_task.pk + 1])
+    response = client.get(url)
+    assert response.status_code == 404
