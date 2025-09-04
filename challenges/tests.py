@@ -96,3 +96,13 @@ def test_challenge_delete_view_get(client, user, logged, goal_task_challenge):
     template_names = [t.name for t in response.templates if t.name is not None]
     assert 'challenges/delete_form.html' in template_names
     assert goal_task_challenge == response.context['object_to_delete']
+
+@pytest.mark.django_db
+def test_challenge_delete_view_post(client, user, logged, goal_task_challenge):
+    """
+    Challenge delete view post method removes challenge from database.
+    """
+    url = reverse('challenges:delete', args=[user.username, goal_task_challenge.pk])
+    operation = {'operation': 'Tak'}
+    response = client.post(url, operation)
+    assert not Challenge.objects.all().contains(goal_task_challenge)
