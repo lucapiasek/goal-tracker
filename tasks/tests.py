@@ -228,3 +228,17 @@ def test_practice_update_view_get(client, user, logged, goal_task, goal_task_pra
     response = client.get(url)
     assert response.status_code == 200
     assert response.context['form'].instance == goal_task_practice
+
+@pytest.mark.django_db
+def test_practice_update_view_post(client, user, logged, goal_task, goal_task_practice):
+    """
+    Practice update view post method updates practice data in database.
+    """
+    url = reverse('tasks:practice_update', args=[user.username, goal_task_practice.pk])
+    data = {
+        'date': '2009-09-09',
+        'repetitions': 9
+    }
+    response = client.post(url, data)
+    assert response.status_code == 302
+    assert Practice.objects.get(pk=goal_task_practice.pk, **data)
