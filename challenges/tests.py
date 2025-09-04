@@ -43,3 +43,12 @@ def test_challenge_detail_view(client, user, logged, goal_task_challenge):
     assert goal_task_challenge == response.context['challenge']
     template_names = [t.name for t in response.templates if t.name is not None]
     assert 'challenges/challenge_detail.html' in template_names
+
+@pytest.mark.django_db
+def test_challenge_detail_view_with_non_existent_challenge(client, user, logged, goal_task_challenge):
+    """
+    Challenge detail view return 404 when requested challenge doesn't exist.
+    """
+    url = reverse('challenges:detail', args=[user.username, goal_task_challenge.pk + 1])
+    response = client.get(url)
+    assert response.status_code == 404
