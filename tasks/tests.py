@@ -175,3 +175,16 @@ def test_practice_create_view_get(client, user, logged, goal_task):
     response = client.get(url)
     assert response.status_code == 200
     assert isinstance(response.context['form'], PracticeForm)
+
+@pytest.mark.django_db
+def test_practice_create_view_post(client, user, logged, goal_task):
+    """
+    Practice create view post method creates practice for task.
+    """
+    url = reverse('tasks:practice_create', args=[user.username, goal_task.pk])
+    data = {
+        'date': '2025-12-09'
+    }
+    response = client.post(url, data)
+    assert response.status_code == 302
+    assert Practice.objects.get(task=goal_task.pk, **data)
