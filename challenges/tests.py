@@ -84,3 +84,15 @@ def test_challenge_create_view_post(client, user, logged, goal):
     assert Task.objects.get(user=user, goal=goal)
     task = Task.objects.get(user=user, goal=goal)
     assert Challenge.objects.get(task=task)
+
+@pytest.mark.django_db
+def test_challenge_delete_view_get(client, user, logged, goal_task_challenge):
+    """
+    Challenge delete view get method provides correct template and task.
+    """
+    url = reverse('challenges:delete', args=[user.username, goal_task_challenge.pk])
+    response = client.get(url)
+    assert response.status_code == 200
+    template_names = [t.name for t in response.templates if t.name is not None]
+    assert 'challenges/delete_form.html' in template_names
+    assert goal_task_challenge == response.context['object_to_delete']
