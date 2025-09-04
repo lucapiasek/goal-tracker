@@ -265,3 +265,14 @@ def test_practice_update_view_is_forbidden_for_teacher(client, user, student, us
     assert response.status_code == 403
     response.client.post(url)
     assert response.status_code == 403
+
+@pytest.mark.django_db
+def test_practice_delete_view_get(client, user, logged, goal_task_practice):
+    """
+    Practice delete view provides correct template.
+    """
+    url = reverse('tasks:practice_delete', args=[user.username, goal_task_practice.pk])
+    response = client.get(url)
+    assert response.status_code == 200
+    template_names = [t.name for t in response.templates if t.name is not None]
+    assert 'tasks/delete_form.html' in template_names
