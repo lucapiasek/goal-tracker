@@ -31,3 +31,15 @@ def test_challenge_list_view_with_multiple_challenges(client, user, logged, goal
     response = client.get(url)
     assert response.status_code == 200
     assert response.context['challenge_list'].count() == 2
+
+@pytest.mark.django_db
+def test_challenge_detail_view(client, user, logged, goal_task_challenge):
+    """
+    Challenge detail view provides correct template and challenge.
+    """
+    url = reverse('challenges:detail', args=[user.username, goal_task_challenge.pk])
+    response = client.get(url)
+    assert response.status_code == 200
+    assert goal_task_challenge == response.context['challenge']
+    template_names = [t.name for t in response.templates if t.name is not None]
+    assert 'challenges/challenge_detail.html' in template_names
