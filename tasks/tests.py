@@ -253,3 +253,15 @@ def test_practice_update_view_returns_404_with_non_existent_practice(client, use
     assert response.status_code == 404
     response = client.post(url)
     assert response.status_code == 404
+
+@pytest.mark.django_db
+def test_practice_update_view_is_forbidden_for_teacher(client, user, student, user2, teacher, teacher_has_student, goal_task_practice):
+    """
+    Practice update view is forbidden for users' teacher.
+    """
+    client.force_login(user2)
+    url = reverse('tasks:practice_update', args=[user.username, goal_task_practice.pk])
+    response = client.get(url)
+    assert response.status_code == 403
+    response.client.post(url)
+    assert response.status_code == 403
