@@ -96,9 +96,9 @@ class PracticeCreateView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner(self.request.user, self.kwargs['username'])
 
-    def get(self, request, username, pk):
-        owner = get_object_or_404(UserModel, username=username)
-        task = get_object_or_404(Task, pk=pk)
+    def get(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
+        task = get_object_or_404(Task, pk=kwargs['pk'])
         form = PracticeForm()
         return render(request, 'tasks/practice_form.html',{
             'form': form,
@@ -106,24 +106,24 @@ class PracticeCreateView(UserPassesTestMixin, View):
             'owner': owner,
             'task': task})
 
-    def post(self, request, username, pk):
-        owner = get_object_or_404(UserModel, username=username)
-        task = get_object_or_404(Task, pk=pk)
+    def post(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
+        task = get_object_or_404(Task, pk=kwargs['pk'])
         form = PracticeForm(request.POST)
         practice = form.save(commit=False)
         practice.task = task
         form.save()
         task.was_practiced = True
         task.save()
-        return redirect('tasks:detail', username, task.pk)
+        return redirect('tasks:detail', kwargs['username'], task.pk)
 
 class PracticeUpdateView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner(self.request.user, self.kwargs['username'])
 
-    def get(self, request, username, pk):
-        owner = get_object_or_404(UserModel, username=username)
-        practice = get_object_or_404(Practice, pk=pk)
+    def get(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
+        practice = get_object_or_404(Practice, pk=kwargs['pk'])
         task = get_object_or_404(Task, pk=practice.task.pk)
         form = PracticeForm(instance=practice)
         return render(request, 'tasks/create_form.html',{
@@ -132,29 +132,29 @@ class PracticeUpdateView(UserPassesTestMixin, View):
             'owner': owner,
             'task': task})
 
-    def post(self, request, username, pk):
-        owner = get_object_or_404(UserModel, username=username)
-        practice = get_object_or_404(Practice, pk=pk)
+    def post(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
+        practice = get_object_or_404(Practice, pk=kwargs['pk'])
         task = get_object_or_404(Task, pk=practice.task.pk)
         form = PracticeForm(request.POST, instance=practice)
         practice = form.save(commit=False)
         practice.task.pk = task.pk
         form.save()
-        return redirect('tasks:detail', username, task.pk)
+        return redirect('tasks:detail', kwargs['username'], task.pk)
 
 class PracticeDeleteView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
-    def get(self, request, username, pk):
-        owner = get_object_or_404(UserModel, username=username)
-        practice = get_object_or_404(Practice, pk=pk)
+    def get(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
+        practice = get_object_or_404(Practice, pk=kwargs['pk'])
         return render(request, 'tasks/delete_form.html', {'object_to_delete': practice, 'owner':owner})
 
-    def post(self, request, username, pk):
+    def post(self, request, *args, **kwargs):
         if request.POST.get('operation') == 'Tak':
-            practice = get_object_or_404(Practice, pk=pk)
+            practice = get_object_or_404(Practice, pk=kwargs['pk'])
             task_pk = practice.task.pk
             practice.delete()
-        return redirect('tasks:detail', username, task_pk)
+        return redirect('tasks:detail', kwargs['username'], task_pk)
 
