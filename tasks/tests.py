@@ -226,4 +226,5 @@ def test_practice_update_view_get(client, user, logged, goal_task, goal_task_pra
     """
     url = reverse('tasks:practice_update', args=[user.username, goal_task_practice.pk])
     response = client.get(url)
+    assert response.status_code == 200
     assert response.context['form'].instance == goal_task_practice
