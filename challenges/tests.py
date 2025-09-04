@@ -1,5 +1,7 @@
 import pytest
 from django.urls import reverse
+from tasks.forms import TaskForm
+from .forms import ChallengeForm
 
 @pytest.mark.django_db
 def test_challenge_list_view(client, user, logged):
@@ -52,3 +54,14 @@ def test_challenge_detail_view_with_non_existent_challenge(client, user, logged,
     url = reverse('challenges:detail', args=[user.username, goal_task_challenge.pk + 1])
     response = client.get(url)
     assert response.status_code == 404
+
+@pytest.mark.django_db
+def test_challenge_create_view_get(client, user, logged):
+    """
+    Challenge create view provides task form and challenge form.
+    """
+    url = reverse('challenges:create', args=[user.username])
+    response = client.get(url)
+    assert response.status_code == 200
+    for form in response.context['forms']:
+        assert isinstance(form, TaskForm) or isinstance(form, ChallengeForm)
