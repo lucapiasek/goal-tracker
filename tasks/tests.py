@@ -135,6 +135,19 @@ def test_task_create_view_post(client, user, logged, goal):
     assert Practice.objects.get(task=task, date='2025-09-12')
 
 @pytest.mark.django_db
+def test_task_update_view_get(client, user, logged, goal_task):
+    """
+    Task update view provides correct form and task instance.
+    """
+    url = reverse('tasks:update', args=[user.username, goal_task.pk])
+    response = client.get(url)
+    assert response.status_code == 200
+    assert isinstance(response.context['form'], TaskForm)
+    assert response.context['form'].instance == goal_task
+    template_names = [t.name for t in response.templates if t.name is not None]
+    assert 'tasks/create_form.html' in template_names
+
+@pytest.mark.django_db
 def test_task_delete_view_get(client, user, logged, goal_task):
     """
     Task delete view provides correct template.
