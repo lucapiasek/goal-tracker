@@ -148,6 +148,17 @@ def test_task_update_view_get(client, user, logged, goal_task):
     assert 'tasks/create_form.html' in template_names
 
 @pytest.mark.django_db
+def test_task_update_view_post(client, user, logged, goal, goal_task):
+    """
+    Task update view post method saves changes in task.
+    """
+    url = reverse('tasks:update', args=[user.username, goal_task.pk])
+    data = {'goal': goal.pk, 'method': 'Calmly'}
+    response = client.post(url, data)
+    assert response.status_code == 302
+    assert Task.objects.get(pk=goal_task.pk, method=data['method'])
+
+@pytest.mark.django_db
 def test_task_delete_view_get(client, user, logged, goal_task):
     """
     Task delete view provides correct template.
