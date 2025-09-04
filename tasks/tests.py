@@ -76,7 +76,7 @@ def test_task_list_view_is_allowed_for_teacher(client, user, user2, goal_task):
 @pytest.mark.django_db
 def test_task_detail_view(client, goal_task, user, logged):
     """
-    Task detail view provides correct template and users' task.
+    Task detail view provides correct template and user's task.
     """
     url = reverse('tasks:detail', args=[user.username, goal_task.pk])
     response = client.get(url)
@@ -210,7 +210,7 @@ def test_practice_create_view_post_returns_404_with_non_existent_task(client, us
 @pytest.mark.django_db
 def test_practice_create_view_is_forbidden_for_teacher(client, user, student, user2, teacher, teacher_has_student, goal_task):
     """
-    Practice create view get method returns 403 for users' teacher.
+    Practice create view get method returns 403 for user's teacher.
     """
     client.force_login(user2)
     url = reverse('tasks:practice_create', args=[user.username, goal_task.pk])
@@ -257,7 +257,7 @@ def test_practice_update_view_returns_404_with_non_existent_practice(client, use
 @pytest.mark.django_db
 def test_practice_update_view_is_forbidden_for_teacher(client, user, student, user2, teacher, teacher_has_student, goal_task_practice):
     """
-    Practice update view is forbidden for users' teacher.
+    Practice update view is forbidden for user's teacher.
     """
     client.force_login(user2)
     url = reverse('tasks:practice_update', args=[user.username, goal_task_practice.pk])
