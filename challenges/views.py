@@ -93,7 +93,7 @@ class ChallengeDeleteView(UserPassesTestMixin, View):
         if request.POST.get('operation') == 'Tak':
             challenge = get_object_or_404(Challenge, pk=pk)
             challenge.delete()
-        return redirect('challenge:list', username)
+        return redirect('challenges:list', username)
 
 class ChallengeConfirmView(UserPassesTestMixin, View):
     def test_func(self):
