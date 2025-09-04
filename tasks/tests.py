@@ -165,3 +165,13 @@ def test_task_delete_view_post_removes_practices(client, user, logged, goal_task
     data = {'operation': 'Tak'}
     response = client.post(url, data)
     assert not Practice.objects.all().contains(goal_task_practice)
+
+@pytest.mark.django_db
+def test_practice_create_view_get(client, user, logged, goal_task):
+    """
+    Practice create view get method provides correct form.
+    """
+    url = reverse('tasks:practice_create', args=[user.username, goal_task.pk])
+    response = client.get(url)
+    assert response.status_code == 200
+    assert isinstance(response.context['form'], PracticeForm)
