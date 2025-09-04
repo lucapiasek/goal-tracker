@@ -87,7 +87,7 @@ class ChallengeDeleteView(UserPassesTestMixin, View):
     def get(self, request, username, pk):
         owner = get_object_or_404(UserModel, username=username)
         challenge = get_object_or_404(Challenge, pk=pk)
-        return render(request, 'tasks/delete_form.html', {'object_to_delete': challenge, 'owner':owner})
+        return render(request, 'challenges/delete_form.html', {'object_to_delete': challenge, 'owner':owner})
 
     def post(self, request, username, pk):
         if request.POST.get('operation') == 'Tak':
