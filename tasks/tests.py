@@ -276,3 +276,13 @@ def test_practice_delete_view_get(client, user, logged, goal_task_practice):
     assert response.status_code == 200
     template_names = [t.name for t in response.templates if t.name is not None]
     assert 'tasks/delete_form.html' in template_names
+
+@pytest.mark.django_db
+def test_practice_delete_view_post(client, user, logged, goal_task_practice):
+    """
+    Practice delete view deletes practice from database.
+    """
+    url = reverse('tasks:practice_delete', args=[user.username, goal_task_practice.pk])
+    operation = {'operation': 'Tak'}
+    response = client.post(url, operation)
+    assert not Practice.objects.all().contains(goal_task_practice)
