@@ -139,6 +139,18 @@ def test_goal_update_view_post(client, user, goal):
     assert Goal.objects.get(pk=goal.pk, **data)
 
 @pytest.mark.django_db
+def test_goal_update_view_returns_404_with_non_existent_goal(client, user, goal):
+    """
+    Goal update view returns 404 when requested goal doesn't exist.
+    """
+    client.force_login(user)
+    url = reverse('tracker:goal_update', args=[user.username, goal.pk + 1])
+    response = client.get(url)
+    assert response.status_code == 404
+    response = client.post(url)
+    assert response.status_code == 404
+
+@pytest.mark.django_db
 def test_pieces_view_with_no_pieces(client, piece, user):
     client.force_login(user)
     url = reverse('tracker:piece_list', args=[user.username])
