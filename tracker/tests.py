@@ -96,6 +96,9 @@ def test_goal_detail_view(client, goal, user):
 
 @pytest.mark.django_db
 def test_goal_create_view_get(client, user):
+    """
+    Goal create view get method returns correct form.
+    """
     client.force_login(user)
     url = reverse('tracker:goal_create', args=[user.username])
     response = client.get(url)
@@ -104,6 +107,9 @@ def test_goal_create_view_get(client, user):
 
 @pytest.mark.django_db
 def test_goal_create_view_post(client, user):
+    """
+    Goal create view post method creates new goal instance in database.
+    """
     client.force_login(user)
     url = reverse('tracker:goal_create', args=[user.username])
     goal_data = {
