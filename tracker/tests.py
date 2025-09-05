@@ -2,7 +2,7 @@ from django.urls import reverse
 import pytest
 from pytest_django.asserts import assertTemplateUsed
 from tracker.models import Goal, Piece
-from tracker.forms import GoalCreateForm
+from tracker.forms import GoalCreateForm, GoalUpdateForm
 import datetime
 from django.contrib.auth import get_user_model
 
@@ -112,6 +112,19 @@ def test_goal_create_view_post(client, user):
     response = client.post(url, goal_data)
     assert response.status_code == 302
     assert Goal.objects.get(**goal_data)
+
+@pytest.mark.django_db
+def test_goal_update_view_get(client, user, goal):
+    """
+    Goal update view get method returns form with goal as an instance
+    """
+    client.force_login(user)
+    url = reverse('tracker:goal_update', args=[user.username, goal.pk])
+    response = client.get(url)
+    assert response.status_code == 200
+    form = response.context['form']
+    assert isinstance(form, GoalUpdateForm)
+    assert form.instance == goal
 
 @pytest.mark.django_db
 def test_pieces_view_with_no_pieces(client, piece, user):
