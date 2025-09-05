@@ -164,6 +164,16 @@ def test_goal_delete_view_get(client, user, goal):
     assert 'tracker/delete_form.html' in template_names
 
 @pytest.mark.django_db
+def test_goal_delete_view_get(client, user, goal):
+    """
+    Goal delete view post method removes goal from database.
+    """
+    client.force_login(user)
+    url = reverse('tracker:goal_delete', args=[user.username, goal.pk])
+    response = client.post(url, {'operation': 'Tak'})
+    assert not Goal.objects.all().contains(goal)
+
+@pytest.mark.django_db
 def test_pieces_view_with_no_pieces(client, piece, user):
     client.force_login(user)
     url = reverse('tracker:piece_list', args=[user.username])
