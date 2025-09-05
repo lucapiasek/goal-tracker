@@ -31,22 +31,22 @@ class GoalDetailView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
-    def get(self, request, username, pk):
-        owner = UserModel.objects.get(username=username)
-        goal = get_object_or_404(Goal, pk=pk)
+    def get(self, request, *args, **kwargs):
+        owner = UserModel.objects.get(username=kwargs['username'])
+        goal = get_object_or_404(Goal, pk=kwargs['pk'])
         return render(request, 'tracker/goal_detail.html', {'goal': goal, 'owner': owner})
 
 class GoalCreateView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
-    def get(self, request, username):
-        owner = UserModel.objects.get(username=username)
+    def get(self, request, *args, **kwargs):
+        owner = UserModel.objects.get(username=kwargs['username'])
         form = GoalCreateForm(user=owner)
         return render(request, 'tracker/create_form.html', {'form': form, 'page_title': 'Dodaj cel', 'owner': owner})
 
-    def post(self, request, username):
-        owner = get_object_or_404(UserModel, username=username)
+    def post(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
         form = GoalCreateForm(request.POST, user=owner)
         if form.is_valid():
             cleaned_data = form.cleaned_data
@@ -68,38 +68,38 @@ class GoalUpdateView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
-    def get(self, request, username, pk):
-        owner = get_object_or_404(UserModel, username=username)
-        goal = get_object_or_404(Goal, pk=pk)
+    def get(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
+        goal = get_object_or_404(Goal, pk=kwargs['pk'])
         form = GoalUpdateForm(instance=goal, user=owner)
         return render(request, 'tracker/create_form.html', {'form': form, 'page_title': 'Zaktualizuj cel', 'owner': owner})
 
-    def post (self, request, username, pk):
-        owner = get_object_or_404(UserModel, username=username)
-        goal = get_object_or_404(Goal, pk=pk)
+    def post (self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
+        goal = get_object_or_404(Goal, pk=kwargs['pk'])
         form = GoalUpdateForm(request.POST, user=owner, instance=goal)
         if form.is_valid():
             goal = form.save()
             pieces = form.cleaned_data['pieces']
             goal.pieces.set(pieces)
             goal.save()
-            return redirect('tracker:goal_detail', username, pk)
+            return redirect('tracker:goal_detail', owner.username, goal.pk)
         return render(request, 'tracker/create_form.html', {'form': form, 'page_title': 'Zaktualizuj cel', 'owner': owner})
 
 class GoalDeleteView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
-    def get(self, request, username, pk):
-        owner = get_object_or_404(UserModel, username=username)
-        goal = get_object_or_404(Goal, pk=pk)
+    def get(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
+        goal = get_object_or_404(Goal, pk=kwargs['pk'])
         return render(request, 'tracker/delete_form.html', {'object_to_delete': goal, 'owner':owner})
 
-    def post(self, request, username, pk):
+    def post(self, request, *args, **kwargs):
         if request.POST.get('operation') == 'Tak':
-            goal = get_object_or_404(Goal, pk=pk)
+            goal = get_object_or_404(Goal, pk=kwargs['pk'])
             goal.delete()
-        return redirect('tracker:goal_list', username)
+        return redirect('tracker:goal_list', kwargs['username'])
 
 class PieceListView(UserPassesTestMixin, View):
     def test_func(self):
