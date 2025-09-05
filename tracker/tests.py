@@ -127,6 +127,18 @@ def test_goal_update_view_get(client, user, goal):
     assert form.instance == goal
 
 @pytest.mark.django_db
+def test_goal_update_view_post(client, user, goal):
+    """
+    Goal update view post method saves changes in goal to database.
+    """
+    client.force_login(user)
+    url = reverse('tracker:goal_update', args=[user.username, goal.pk])
+    data = {'name': goal.name, 'additional_info': 'test_info_update'}
+    response = client.post(url, data)
+    assert response.status_code == 302
+    assert Goal.objects.get(pk=goal.pk, **data)
+
+@pytest.mark.django_db
 def test_pieces_view_with_no_pieces(client, piece, user):
     client.force_login(user)
     url = reverse('tracker:piece_list', args=[user.username])
