@@ -13,8 +13,8 @@ class ChallengeListView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
-    def get(self, request, username):
-        owner = get_object_or_404(UserModel, username=username)
+    def get(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
         challenge_list =  Challenge.objects.filter(user=owner)
         return render(request, "challenges/challenge_list.html", {
             'challenge_list': challenge_list,
@@ -25,9 +25,9 @@ class ChallengeDetailView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
-    def get(self, request, username, pk):
-        owner = get_object_or_404(UserModel, username=username)
-        challenge = get_object_or_404(Challenge, pk=pk)
+    def get(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
+        challenge = get_object_or_404(Challenge, pk=kwargs['pk'])
         task = Task.objects.select_related('challenge')
         return render(request, 'challenges/challenge_detail.html', {'challenge': challenge, 'task': task, 'owner': owner})
 
@@ -35,13 +35,13 @@ class ChallengeCreateView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username'])
 
-    def get(self, request, username):
-        owner = get_object_or_404(UserModel, username=username)
+    def get(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
         forms = [TaskForm(user=owner), ChallengeForm()]
         return render(request, 'challenges/create_forms.html', {'forms': forms, 'owner': owner})
 
-    def post(self, request, username):
-        owner = get_object_or_404(UserModel, username=username)
+    def post(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
         task_form = TaskForm(request.POST, user=owner)
         challenge_form = ChallengeForm(request.POST)
         task = task_form.save(commit=False)
@@ -53,7 +53,7 @@ class ChallengeCreateView(UserPassesTestMixin, View):
         challenge.save()
         task.challenge = challenge
         task.save()
-        return redirect('challenges:list', username)
+        return redirect('challenges:list', owner.username)
 
 class ChallengeCreateFromTaskView(UserPassesTestMixin, View):
     def test_func(self):
@@ -84,16 +84,16 @@ class ChallengeDeleteView(UserPassesTestMixin, View):
     def test_func(self):
         return is_owner_or_is_teacher(self.request.user, self.kwargs['username']) and not is_student(self.request.user, self.kwargs['username'])
 
-    def get(self, request, username, pk):
-        owner = get_object_or_404(UserModel, username=username)
-        challenge = get_object_or_404(Challenge, pk=pk)
+    def get(self, request, *args, **kwargs):
+        owner = get_object_or_404(UserModel, username=kwargs['username'])
+        challenge = get_object_or_404(Challenge, pk=kwargs['pk'])
         return render(request, 'challenges/delete_form.html', {'object_to_delete': challenge, 'owner':owner})
 
-    def post(self, request, username, pk):
+    def post(self, request, *args, **kwargs):
         if request.POST.get('operation') == 'Tak':
-            challenge = get_object_or_404(Challenge, pk=pk)
+            challenge = get_object_or_404(Challenge, pk=kwargs['pk'])
             challenge.delete()
-        return redirect('challenges:list', username)
+        return redirect('challenges:list', kwargs['username'])
 
 class ChallengeConfirmView(UserPassesTestMixin, View):
     def test_func(self):
