@@ -151,6 +151,19 @@ def test_goal_update_view_returns_404_with_non_existent_goal(client, user, goal)
     assert response.status_code == 404
 
 @pytest.mark.django_db
+def test_goal_delete_view_get(client, user, goal):
+    """
+    Goal delete view get method returns goal to delete and provides correct template.
+    """
+    client.force_login(user)
+    url = reverse('tracker:goal_delete', args=[user.username, goal.pk])
+    response = client.get(url)
+    assert response.status_code == 200
+    assert response.context['object_to_delete'] == goal
+    template_names = [t.name for t in response.templates if t.name is not None]
+    assert 'tracker/delete_form.html' in template_names
+
+@pytest.mark.django_db
 def test_pieces_view_with_no_pieces(client, piece, user):
     client.force_login(user)
     url = reverse('tracker:piece_list', args=[user.username])
