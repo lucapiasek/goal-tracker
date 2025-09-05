@@ -1,7 +1,7 @@
 # About
 Django project for organizing work on goals and pieces for musicians.
 
-##Features:
+Features:
 registration,
 teacher and student relations,
 adding goals and pieces,
