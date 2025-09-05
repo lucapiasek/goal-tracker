@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import UserPassesTestMixin
 from accounts.permissions import is_owner_or_is_teacher
 from django.forms import modelform_factory
-import datetime
+
 
 UserModel = get_user_model()
 
